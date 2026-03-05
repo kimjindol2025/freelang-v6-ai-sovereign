@@ -115,19 +115,25 @@ describe('MultiTenantManager - 리소스 관리', () => {
   });
 
   test('R-4: 리소스 할당 추가', async () => {
-    const before = await manager.getResources(proTenant.id);
-    await manager.allocateResources(proTenant.id, 'storage', 50);
-    const after = await manager.getResources(proTenant.id);
+    const newTenant = await manager.createTenant('Resource Test 1', 'pro');
+    const before = await manager.getResources(newTenant.id);
+    const beforeSize = before?.storage.maxSizeGB || 0;
 
-    expect(after?.storage.maxSizeGB).toBe((before?.storage.maxSizeGB || 0) + 50);
+    await manager.allocateResources(newTenant.id, 'storage', 50);
+    const after = await manager.getResources(newTenant.id);
+
+    expect(after?.storage.maxSizeGB).toBe(beforeSize + 50);
   });
 
   test('R-5: 리소스 할당 해제', async () => {
-    const before = await manager.getResources(proTenant.id);
-    await manager.deallocateResources(proTenant.id, 'storage', 10);
-    const after = await manager.getResources(proTenant.id);
+    const newTenant = await manager.createTenant('Resource Test 2', 'pro');
+    const before = await manager.getResources(newTenant.id);
+    const beforeSize = before?.storage.maxSizeGB || 0;
 
-    expect(after?.storage.maxSizeGB).toBe((before?.storage.maxSizeGB || 0) - 10);
+    await manager.deallocateResources(newTenant.id, 'storage', 10);
+    const after = await manager.getResources(newTenant.id);
+
+    expect(after?.storage.maxSizeGB).toBe(beforeSize - 10);
   });
 });
 
