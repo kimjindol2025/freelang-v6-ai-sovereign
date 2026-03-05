@@ -1,19 +1,21 @@
-# 🚀 Claude Code 자동 동기화 파이프라인
+# 🤖 FreeLang v6 - AI 주권 언어
 
-**Claude Code에서 작성한 모든 코드를 자동으로 Gogs 저장소에 동기화하는 완전 자동화 시스템**
+**인간은 지시만 내리고, AI가 코드를 생성하고 배포하는 자동화 언어 플랫폼**
+
+기반: [claude-automation](https://gogs.dclub.kr/kim/claude-automation) + [v5 자체호스팅](https://gogs.dclub.kr/kim/freelang-final)
 
 ```
-Claude Code 작성
+인간: "이 기능을 만들어"
     ↓
-프로젝트 자동 생성
+AI 자연어 처리
     ↓
-Git 저장소 초기화
+AI 코드 생성
     ↓
-Gogs 저장소 자동 생성
+AI 최적화
     ↓
-자동 푸시 (post-commit hook)
+AI 자동 배포
     ↓
-✅ Gogs에 자동 저장됨
+✅ 실행 중 (모니터링 자동)
 ```
 
 ---
