@@ -1,100 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="42" failures="2" errors="0" time="33.753">
-  <testsuite name="VercelDeployer" errors="0" failures="2" skipped="0" timestamp="2026-03-05T18:58:27" time="33.326" tests="42">
-    <testcase classname="VercelDeployer" name="should deploy Next.js project to Vercel" time="2.263">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="4.332">
+  <testsuite name="AIOptimizer - Advanced AI Integration" errors="0" failures="0" skipped="0" timestamp="2026-03-05T19:10:37" time="3.974" tests="26">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-1: 기본 파인튜닝 실행" time="0.008">
     </testcase>
-    <testcase classname="VercelDeployer" name="should include CDN URL when enabled" time="2.137">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-2: 파인튜닝 데이터 검증" time="0.002">
     </testcase>
-    <testcase classname="VercelDeployer" name="should configure environment variables" time="2.131">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-3: 파인튜닝 메트릭 확인" time="0.002">
     </testcase>
-    <testcase classname="VercelDeployer" name="should support custom domain" time="2.142">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-4: 파인튜닝된 모델 조회" time="0.002">
     </testcase>
-    <testcase classname="VercelDeployer" name="should handle database configuration" time="2.119">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-5: 파인튜닝 정확도 비교" time="0.002">
     </testcase>
-    <testcase classname="AWSDeployer" name="should deploy application to AWS with ALB" time="0.404">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-1: 성능 최적화" time="0.003">
     </testcase>
-    <testcase classname="AWSDeployer" name="should configure auto scaling group" time="0.405">
-      <failure>Error: expect(received).toBeGreaterThanOrEqual(expected)
-
-Expected: &gt;= 3
-Received:    2
-    at Object.&lt;anonymous&gt; (/home/kimjin/Desktop/kim/freelang-v6-ai-sovereign/tests/cloud-deployer.test.ts:116:52)</failure>
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-2: 보안 최적화" time="0.002">
     </testcase>
-    <testcase classname="AWSDeployer" name="should setup CloudFront CDN" time="0.403">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-3: 리팩토링" time="0.001">
     </testcase>
-    <testcase classname="AWSDeployer" name="should configure RDS database" time="0.404">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-4: 제약 조건이 있는 최적화" time="0.001">
     </testcase>
-    <testcase classname="AWSDeployer" name="should setup CodeDeploy automation" time="0.402">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-5: 모든 최적화 유형 적용" time="0.002">
     </testcase>
-    <testcase classname="GCPDeployer" name="should deploy to Google Cloud Run" time="0.204">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-1: 기술 스택 추천" time="0.002">
     </testcase>
-    <testcase classname="GCPDeployer" name="should configure Cloud CDN" time="0.202">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-2: 아키텍처 패턴 추천" time="0.001">
     </testcase>
-    <testcase classname="GCPDeployer" name="should setup Cloud SQL" time="0.203">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-3: 리소스 최적화 추천" time="0.001">
     </testcase>
-    <testcase classname="GCPDeployer" name="should setup Pub/Sub topics" time="0.202">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-4: 제약 조건이 있는 추천" time="0.001">
     </testcase>
-    <testcase classname="GCPDeployer" name="should respect CPU and memory limits" time="0.202">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-5: 여러 추천 비교" time="0">
     </testcase>
-    <testcase classname="CloudDeployerFactory" name="should create Vercel deployer" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-1: 기본 작업 분배" time="0.002">
     </testcase>
-    <testcase classname="CloudDeployerFactory" name="should create AWS deployer" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-2: 에이전트 상태 추적" time="0.001">
     </testcase>
-    <testcase classname="CloudDeployerFactory" name="should create GCP deployer" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-3: 여러 작업 병렬 처리" time="0.002">
     </testcase>
-    <testcase classname="CloudDeployerFactory" name="should throw error for unknown provider" time="0.087">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-4: 에이전트 메시지 전송" time="0.001">
     </testcase>
-    <testcase classname="AutoScalingManager" name="should scale up when CPU exceeds target" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-5: 작업 실패 처리" time="0.001">
     </testcase>
-    <testcase classname="AutoScalingManager" name="should scale up when memory exceeds target" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-1: 사용자 피드백 수집" time="0">
     </testcase>
-    <testcase classname="AutoScalingManager" name="should scale down when both metrics are low" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-2: 여러 피드백 수집" time="0.001">
     </testcase>
-    <testcase classname="AutoScalingManager" name="should respect min replicas" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-3: A/B 테스트 실행" time="0.001">
     </testcase>
-    <testcase classname="AutoScalingManager" name="should respect max replicas" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-4: A/B 테스트 결과 조회" time="0.001">
     </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should orchestrate Vercel deployment" time="3.861">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-5: 피드백 기반 모델 개선 추적" time="0.001">
     </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should orchestrate AWS deployment" time="0.336">
-    </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should orchestrate GCP deployment" time="0.365">
-    </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should rollback Vercel deployment" time="0.001">
-    </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should rollback AWS deployment" time="0.001">
-    </testcase>
-    <testcase classname="DeploymentOrchestrator" name="should rollback GCP deployment" time="0.001">
-    </testcase>
-    <testcase classname="Database Configuration" name="should support PostgreSQL configuration" time="0.299">
-    </testcase>
-    <testcase classname="Database Configuration" name="should support MySQL configuration" time="0.354">
-    </testcase>
-    <testcase classname="Database Configuration" name="should support MongoDB configuration" time="0.316">
-    </testcase>
-    <testcase classname="Health Checks" name="Vercel deployment should include health check results" time="3.838">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: &quot;success&quot;
-Received: &quot;failed&quot;
-    at Object.&lt;anonymous&gt; (/home/kimjin/Desktop/kim/freelang-v6-ai-sovereign/tests/cloud-deployer.test.ts:512:27)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Health Checks" name="AWS deployment should include health check results" time="0.312">
-    </testcase>
-    <testcase classname="Health Checks" name="GCP deployment should include health check results" time="0.286">
-    </testcase>
-    <testcase classname="Multi-Environment Deployment" name="should deploy to development environment" time="3.865">
-    </testcase>
-    <testcase classname="Multi-Environment Deployment" name="should deploy to staging environment" time="0.345">
-    </testcase>
-    <testcase classname="Multi-Environment Deployment" name="should deploy to production environment" time="0.333">
-    </testcase>
-    <testcase classname="Deployment Metrics" name="should include deployment duration" time="0.305">
-    </testcase>
-    <testcase classname="Deployment Metrics" name="should track scaling metrics for AWS" time="0.332">
-    </testcase>
-    <testcase classname="Deployment Metrics" name="should track scaling metrics for GCP" time="0.342">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 통합 테스트" name="전체 워크플로우: 파인튜닝 → 최적화 → 추천 → 에이전트 → 피드백" time="0.002">
     </testcase>
   </testsuite>
 </testsuites>
