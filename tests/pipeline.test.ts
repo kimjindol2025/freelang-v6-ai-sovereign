@@ -330,9 +330,9 @@ describe('PipelineGenerator', () => {
     });
 
     test('파이프라인 설정 객체 일관성', () => {
-      const testPipeline = generator.setupTestPipeline();
-      const deployPipeline = generator.setupDeploymentPipeline();
-      const monitoring = generator.setupMonitoring();
+      const testPipeline = generator.setupTestPipeline() as any;
+      const deployPipeline = generator.setupDeploymentPipeline() as any;
+      const monitoring = generator.setupMonitoring() as any;
 
       expect(testPipeline).toHaveProperty('unitTest');
       expect(deployPipeline).toHaveProperty('environments');

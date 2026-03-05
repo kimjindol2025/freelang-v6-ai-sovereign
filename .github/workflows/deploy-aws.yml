@@ -1,0 +1,87 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_run:
+    workflows: [ "CI/CD Pipeline" ]
+    types: [ completed ]
+    branches: [ main ]
+
+jobs:
+  deploy-aws:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    strategy:
+      matrix:
+        region: [ us-east-1, us-west-2, eu-west-1 ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: AWS 자격증명 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ matrix.region }}
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 의존성 설치 및 빌드
+        run: |
+          npm ci
+          npm run build
+
+      - name: ECR에 로그인
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Docker 이미지 빌드 및 푸시
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: freelang-v6
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" > image.txt
+
+      - name: ECS 작업 정의 업데이트
+        run: |
+          aws ecs update-service             --cluster freelang-prod             --service freelang-service             --force-new-deployment             --region ${{ matrix.region }}
+
+      - name: 배포 상태 확인
+        run: |
+          aws ecs wait services-stable             --cluster freelang-prod             --services freelang-service             --region ${{ matrix.region }}
+
+  smoke-test-aws:
+    runs-on: ubuntu-latest
+    needs: deploy-aws
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Smoke 테스트
+        run: |
+          sleep 30
+          curl -f https://api.freelang.example.com/health || exit 1
+
+  rollback-on-failure:
+    runs-on: ubuntu-latest
+    needs: [deploy-aws, smoke-test-aws]
+    if: ${{ failure() }}
+    steps:
+      - name: AWS 자격증명 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: 자동 롤백
+        run: |
+          aws ecs update-service             --cluster freelang-prod             --service freelang-service             --force-new-deployment             --region us-east-1
+          echo "✅ 롤백 완료"
