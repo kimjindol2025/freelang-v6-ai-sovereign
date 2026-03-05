@@ -1,0 +1,42 @@
+# 시스템 파일
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.iml
+
+# 로그
+*.log
+logs/
+
+# 캐시
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+node_modules/
+.npm/
+
+# 환경 설정
+.env
+.env.local
+.env.*.local
+config.local.json
+
+# 테스트
+coverage/
+.nyc_output/
+*.lcov
+
+# 빌드
+dist/
+build/
+.next/
+out/
+
+# 임시 파일
+tmp/
+temp/
+*.tmp
