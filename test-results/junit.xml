@@ -1,61 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="28" failures="0" errors="0" time="4.22">
-  <testsuite name="MultiTenantManager - 테넌트 격리" errors="0" failures="0" skipped="0" timestamp="2026-03-05T19:15:09" time="3.507" tests="28">
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-1: 새 테넌트 생성" time="0.005">
+<testsuites name="jest tests" tests="26" failures="0" errors="0" time="2.203">
+  <testsuite name="AIOptimizer - Advanced AI Integration" errors="0" failures="0" skipped="0" timestamp="2026-03-05T19:17:36" time="1.833" tests="26">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-1: 기본 파인튜닝 실행" time="0.006">
     </testcase>
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-2: 테넌트 조회" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-2: 파인튜닝 데이터 검증" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-3: 테넌트 업데이트" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-3: 파인튜닝 메트릭 확인" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-4: 테넌트 일시 중단" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-4: 파인튜닝된 모델 조회" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-5: 테넌트 복구" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › LLM 파인튜닝" name="1-5: 파인튜닝 정확도 비교" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-1: Free 티어 리소스 할당" time="0.002">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-1: 성능 최적화" time="0.002">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-2: Pro 티어 리소스 할당" time="0.002">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-2: 보안 최적화" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-3: Enterprise 티어 리소스 할당" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-3: 리팩토링" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-4: 리소스 할당 추가" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-4: 제약 조건이 있는 최적화" time="0.009">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-5: 리소스 할당 해제" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 자동 최적화" name="2-5: 모든 최적화 유형 적용" time="0.002">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-1: 청구 정보 조회" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-1: 기술 스택 추천" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-2: 사용량 기록" time="0.01">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-2: 아키텍처 패턴 추천" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-3: 청구서 생성" time="0.002">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-3: 리소스 최적화 추천" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-4: 결제 처리" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-4: 제약 조건이 있는 추천" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-5: 여러 청구서 관리" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › AI 기반 추천" name="3-5: 여러 추천 비교" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-1: 테넌트 브랜딩 설정" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-1: 기본 작업 분배" time="0.002">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-2: 격리 정책 커스터마이제이션" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-2: 에이전트 상태 추적" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-3: 네트워크 격리 설정" time="0">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-3: 여러 작업 병렬 처리" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-4: 데이터 필터링 (Row-Level Security)" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-4: 에이전트 메시지 전송" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-5: 테넌트 컨텍스트" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 멀티 에이전트 조율" name="4-5: 작업 실패 처리" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-1: Free 티어 SLA 확인" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-1: 사용자 피드백 수집" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-2: Pro 티어 SLA 확인" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-2: 여러 피드백 수집" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-3: Enterprise 티어 SLA 확인" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-3: A/B 테스트 실행" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-4: 모니터링 메트릭 기록" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-4: A/B 테스트 결과 조회" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-5: 자동 스케일링 정책" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 학습 &amp; 피드백" name="5-5: 피드백 기반 모델 개선 추적" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - 통합 테스트" name="I-1: 전체 테넌트 목록" time="0.001">
-    </testcase>
-    <testcase classname="MultiTenantManager - 통합 테스트" name="I-2: 테넌트 통계" time="0.001">
-    </testcase>
-    <testcase classname="MultiTenantManager - 통합 테스트" name="I-3: 이용률 리포트" time="0.001">
+    <testcase classname="AIOptimizer - Advanced AI Integration › 통합 테스트" name="전체 워크플로우: 파인튜닝 → 최적화 → 추천 → 에이전트 → 피드백" time="0.002">
     </testcase>
   </testsuite>
 </testsuites>
