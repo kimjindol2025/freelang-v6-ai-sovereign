@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="20" failures="0" errors="0" time="3.232">
+  <testsuite name="CodeGen Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-03-05T18:43:26" time="2.905" tests="20">
+    <testcase classname="CodeGen Integration Tests › Test 1: Express API + PostgreSQL" name="should generate Express API project with PostgreSQL" time="0.008">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 1: Express API + PostgreSQL" name="should generate valid package.json with correct dependencies" time="0.009">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 2: React + Node.js Full Stack" name="should generate full-stack project with React frontend" time="0.003">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 2: React + Node.js Full Stack" name="should include React dependencies" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 3: FastAPI + MongoDB" name="should handle non-Node.js tech stack" time="0.002">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 4: CLI Tool" name="should generate CLI project structure" time="0.002">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 5: Dependency Auto-Resolution" name="should add dependencies based on tech stack" time="0.002">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 5: Dependency Auto-Resolution" name="should not add JavaScript dependencies to TypeScript project" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 6: File Path Normalization" name="should generate valid file paths" time="0.007">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 6: File Path Normalization" name="should handle special characters in project name" time="0">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 7: Performance" name="should generate code within 500ms" time="0">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 7: Performance" name="should generate configs within 100ms" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 8: Large Project Generation" name="should generate 35+ files for complex project" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 8: Large Project Generation" name="should generate valid code structure for multi-feature project" time="0.002">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 9: Environment Configuration" name="should generate all configuration files" time="0.002">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 9: Environment Configuration" name="should include database configuration in .env" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 9: Environment Configuration" name="should generate MongoDB config for MongoDB projects" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 10: Project Type Accuracy" name="should generate appropriate files for API project" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 10: Project Type Accuracy" name="should generate appropriate files for Web project" time="0.001">
+    </testcase>
+    <testcase classname="CodeGen Integration Tests › Test 10: Project Type Accuracy" name="should generate appropriate files for CLI project" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

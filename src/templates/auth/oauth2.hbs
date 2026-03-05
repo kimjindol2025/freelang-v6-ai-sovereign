@@ -1,0 +1,161 @@
+import { Request, Response, NextFunction } from 'express';
+
+export interface OAuth2Config {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+  authorizationUrl: string;
+  tokenUrl: string;
+}
+
+export interface OAuth2Provider {
+  name: string;
+  config: OAuth2Config;
+  userProfileUrl: string;
+  scope: string[];
+}
+
+/**
+ * OAuth2 Authorization URL Builder
+ */
+export const buildAuthorizationUrl = (
+  provider: OAuth2Provider,
+  state: string,
+  additionalParams?: Record<string, string>
+): string => {
+  const params = new URLSearchParams({
+    client_id: provider.config.clientId,
+    redirect_uri: provider.config.redirectUri,
+    response_type: 'code',
+    scope: provider.scope.join(' '),
+    state,
+    ...additionalParams
+  });
+
+  return `${provider.config.authorizationUrl}?${params.toString()}`;
+};
+
+/**
+ * Exchange authorization code for access token
+ */
+export const exchangeCodeForToken = async (
+  provider: OAuth2Provider,
+  code: string
+): Promise<{ accessToken: string; refreshToken?: string; expiresIn: number }> => {
+  const response = await fetch(provider.config.tokenUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      client_id: provider.config.clientId,
+      client_secret: provider.config.clientSecret,
+      code,
+      redirect_uri: provider.config.redirectUri,
+      grant_type: 'authorization_code'
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Token exchange failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    expiresIn: data.expires_in || 3600
+  };
+};
+
+/**
+ * Get user profile from OAuth2 provider
+ */
+export const getUserProfile = async (
+  provider: OAuth2Provider,
+  accessToken: string
+): Promise<any> => {
+  const response = await fetch(provider.userProfileUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user profile: ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+/**
+ * OAuth2 callback handler middleware
+ */
+export const oauth2CallbackHandler = (provider: OAuth2Provider) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { code, state } = req.query;
+
+      if (!code || !state) {
+        return res.status(400).json({ error: 'Missing code or state parameter' });
+      }
+
+      // Verify state (implement your own state validation)
+      // const isValidState = await verifyState(state as string);
+      // if (!isValidState) {
+      //   return res.status(401).json({ error: 'Invalid state parameter' });
+      // }
+
+      // Exchange code for token
+      const tokens = await exchangeCodeForToken(provider, code as string);
+
+      // Get user profile
+      const userProfile = await getUserProfile(provider, tokens.accessToken);
+
+      // TODO: Implement user creation/update in your database
+      // const user = await findOrCreateUser(userProfile, tokens);
+
+      // Set cookies or return tokens
+      req.session = {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        user: userProfile
+      };
+
+      // Redirect to frontend with token
+      res.redirect(`/auth-success?token=${tokens.accessToken}`);
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
+/**
+ * Predefined OAuth2 providers
+ */
+export const OAUTH2_PROVIDERS = {
+  google: {
+    name: 'Google',
+    config: {
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      redirectUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback',
+      authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+      tokenUrl: 'https://oauth2.googleapis.com/token'
+    },
+    userProfileUrl: 'https://www.googleapis.com/oauth2/v2/userinfo',
+    scope: ['openid', 'email', 'profile']
+  },
+  github: {
+    name: 'GitHub',
+    config: {
+      clientId: process.env.GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+      redirectUri: process.env.GITHUB_REDIRECT_URI || 'http://localhost:3000/auth/github/callback',
+      authorizationUrl: 'https://github.com/login/oauth/authorize',
+      tokenUrl: 'https://github.com/login/oauth/access_token'
+    },
+    userProfileUrl: 'https://api.github.com/user',
+    scope: ['user:email']
+  }
+};

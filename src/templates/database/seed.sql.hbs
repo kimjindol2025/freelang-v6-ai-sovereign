@@ -1,0 +1,21 @@
+-- Seed data for {{appName}}
+
+{{#if seedData}}
+{{#each seedData}}
+INSERT INTO {{this.table}} ({{#each this.columns}}{{this}}{{#unless @last}}, {{/unless}}{{/each}})
+VALUES ({{#each this.values}}'{{this}}'{{#unless @last}}, {{/unless}}{{/each}});
+{{/each}}
+{{else}}
+-- Default seed data for users
+INSERT INTO users (name, email, password, role, status)
+VALUES
+  ('Admin User', 'admin@example.com', '$2b$10$hashedpassword123', 'admin', 'active'),
+  ('Test User', 'test@example.com', '$2b$10$hashedpassword456', 'user', 'active')
+ON CONFLICT (email) DO NOTHING;
+
+-- Add API keys for testing
+INSERT INTO api_keys (user_id, key_hash, name)
+SELECT id, 'test_key_hash_123', 'Test API Key' FROM users WHERE email = 'admin@example.com'
+ON CONFLICT DO NOTHING;
+
+{{/if}}

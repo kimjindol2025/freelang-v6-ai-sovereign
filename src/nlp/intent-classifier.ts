@@ -1,13 +1,13 @@
 /**
  * Intent Classifier
  * 자연어 → 의도 분류
- * 
+ *
  * Example:
- * "사용자 관리 REST API 만들어" 
+ * "사용자 관리 REST API 만들어"
  * → {intent: "create_api", project_type: "api", confidence: 0.95}
  */
 
-import Anthropic from "@anthropic-ai/sdk";
+const Anthropic = require("@anthropic-ai/sdk").default;
 
 export interface IntentResult {
   intent: string; // create_api, create_web, create_cli, create_service, add_feature, modify_auth, optimize
@@ -29,7 +29,7 @@ const VALID_INTENTS = [
 const VALID_PROJECT_TYPES = ["api", "web", "cli", "service"];
 
 export class IntentClassifier {
-  private client: Anthropic;
+  private client: any;
 
   constructor() {
     this.client = new Anthropic({

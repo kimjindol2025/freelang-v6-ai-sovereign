@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: {{projectName}}-app
+    ports:
+      - "{{port}}:{{port}}"
+    environment:
+      NODE_ENV: {{environment}}
+      PORT: {{port}}
+      {{#if requirements.database}}
+      DATABASE_URL: postgresql://{{dbUser}}:{{dbPassword}}@db:5432/{{dbName}}
+      {{/if}}
+    {{#if requirements.database}}
+    depends_on:
+      db:
+        condition: service_healthy
+    {{/if}}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - {{projectName}}-network
+    restart: unless-stopped
+
+  {{#if requirements.database}}
+  db:
+    image: postgres:15-alpine
+    container_name: {{projectName}}-db
+    environment:
+      POSTGRES_USER: {{dbUser}}
+      POSTGRES_PASSWORD: {{dbPassword}}
+      POSTGRES_DB: {{dbName}}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      {{#if initScript}}
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      {{/if}}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{dbUser}}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - {{projectName}}-network
+    restart: unless-stopped
+  {{/if}}
+
+  {{#if requirements.cache}}
+  redis:
+    image: redis:7-alpine
+    container_name: {{projectName}}-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - {{projectName}}-network
+    restart: unless-stopped
+  {{/if}}
+
+volumes:
+  {{#if requirements.database}}
+  postgres_data:
+  {{/if}}
+  {{#if requirements.cache}}
+  redis_data:
+  {{/if}}
+
+networks:
+  {{projectName}}-network:
+    driver: bridge

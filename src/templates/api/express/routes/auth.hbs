@@ -1,0 +1,117 @@
+import express, { Request, Response } from 'express';
+{{#if jwt}}
+import { generateToken, verifyToken } from '../auth/jwt';
+{{/if}}
+
+const router = express.Router();
+
+// POST /api/auth/login - User login
+router.post('/login', async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password required' });
+    }
+
+    // TODO: Implement authentication logic
+    // const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    {{#if jwt}}
+    const token = generateToken({
+      id: 'user-id',
+      email,
+      role: 'user'
+    });
+    {{/if}}
+
+    res.json({
+      {{#if jwt}}
+      token,
+      {{/if}}
+      user: {
+        id: 'user-id',
+        email,
+        role: 'user'
+      },
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// POST /api/auth/register - User registration
+router.post('/register', async (req: Request, res: Response) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Validation
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // TODO: Check if user exists
+    // const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    // if (existing.rows.length > 0) {
+    //   return res.status(409).json({ error: 'User already exists' });
+    // }
+
+    // TODO: Hash password and create user
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // const user = await db.query(
+    //   'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, email, name',
+    //   [name, email, hashedPassword]
+    // );
+
+    {{#if jwt}}
+    const token = generateToken({
+      id: 'new-user-id',
+      email,
+      role: 'user'
+    });
+    {{/if}}
+
+    res.status(201).json({
+      {{#if jwt}}
+      token,
+      {{/if}}
+      user: {
+        id: 'new-user-id',
+        name,
+        email,
+        role: 'user'
+      },
+      message: 'User registered successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+// POST /api/auth/refresh - Refresh token
+{{#if jwt}}
+router.post('/refresh', (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ error: 'Token required' });
+    }
+
+    const decoded = verifyToken(token);
+    const newToken = generateToken({
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role
+    });
+
+    res.json({ token: newToken });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+});
+{{/if}}
+
+export default router;

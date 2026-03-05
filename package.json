@@ -8,22 +8,29 @@
     "dev": "ts-node src/v6-engine.ts",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "jest tests/e2e.test.ts",
+    "test:nlp": "jest tests/nlp.test.ts",
+    "test:codegen": "jest tests/codegen.test.ts",
+    "test:deployer": "jest tests/deployer.test.ts",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "handlebars": "^4.7.7",
+    "@anthropic-ai/sdk": "^0.8.0",
     "dotenv": "^16.0.0",
-    "@anthropic-ai/sdk": "^0.8.0"
+    "handlebars": "^4.7.7"
   },
   "devDependencies": {
+    "@types/handlebars": "^4.1.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^18.0.0",
-    "@types/jest": "^29.0.0",
-    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
     "jest": "^29.0.0",
+    "jest-junit": "^16.0.0",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.9.0",
-    "eslint": "^8.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0"
+    "typescript": "^5.0.0"
   }
 }
