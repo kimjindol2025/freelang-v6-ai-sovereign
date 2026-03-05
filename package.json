@@ -1,64 +1,29 @@
 {
-  "name": "claude-automation",
+  "name": "freelang-v6-ai-sovereign",
   "version": "1.0.0",
-  "description": "Claude Code 자동 동기화 파이프라인 - 프로젝트 자동 생성 및 Gogs 동기화 시스템",
-  "main": "create-project.sh",
-  "repository": "https://gogs.dclub.kr/kim/claude-automation.git",
-  "author": "kim",
-  "license": "MIT",
-  "keywords": [
-    "claude",
-    "automation",
-    "gogs",
-    "git",
-    "project-management",
-    "devops",
-    "deployment"
-  ],
-  "category": "DevOps",
-  "tags": [
-    "claude-code",
-    "gogs",
-    "git-automation",
-    "project-creation",
-    "continuous-sync"
-  ],
+  "description": "FreeLang v6 - AI 주권 언어",
+  "main": "dist/v6-engine.js",
   "scripts": {
-    "install": "bash install.sh",
-    "test": "bash test.sh",
-    "monitor": "bash monitor-sync.sh"
+    "build": "tsc",
+    "dev": "ts-node src/v6-engine.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts"
   },
-  "bin": {
-    "claude-automation": "./create-project.sh",
-    "claude-monitor": "./monitor-sync.sh"
+  "dependencies": {
+    "handlebars": "^4.7.7",
+    "dotenv": "^16.0.0",
+    "@anthropic-ai/sdk": "^0.8.0"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "engines": {
-    "bash": ">=4.0"
-  },
-  "installPath": "/home/kimjin/kim_modules/claude-automation",
-  "hooks": {
-    "post-install": "bash post-install.sh"
-  },
-  "metadata": {
-    "documentation": "https://gogs.dclub.kr/kim/claude-automation",
-    "support": "kim@dclub.kr",
-    "maintainer": "kim",
-    "stability": "stable",
-    "tested": "2026-03-06"
-  },
-  "features": [
-    "Automatic project creation (5-step pipeline)",
-    "Auto-sync to Gogs with post-commit hooks",
-    "Project monitoring dashboard",
-    "Multi-type project support (web, api, cli, library, service, daemon)",
-    "Zero-configuration setup"
-  ],
-  "requirements": [
-    "git",
-    "bash 4.0+",
-    "curl",
-    "jq (optional, for API responses)"
-  ]
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/jest": "^29.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "ts-node": "^10.9.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0"
+  }
 }
