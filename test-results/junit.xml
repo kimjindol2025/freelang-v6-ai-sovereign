@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="28" failures="0" errors="0" time="2.428">
-  <testsuite name="MultiTenantManager - 테넌트 격리" errors="0" failures="0" skipped="0" timestamp="2026-03-05T19:13:10" time="2.066" tests="28">
+<testsuites name="jest tests" tests="28" failures="0" errors="0" time="4.22">
+  <testsuite name="MultiTenantManager - 테넌트 격리" errors="0" failures="0" skipped="0" timestamp="2026-03-05T19:15:09" time="3.507" tests="28">
     <testcase classname="MultiTenantManager - 테넌트 격리" name="T-1: 새 테넌트 생성" time="0.005">
     </testcase>
-    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-2: 테넌트 조회" time="0.001">
+    <testcase classname="MultiTenantManager - 테넌트 격리" name="T-2: 테넌트 조회" time="0">
     </testcase>
     <testcase classname="MultiTenantManager - 테넌트 격리" name="T-3: 테넌트 업데이트" time="0.001">
     </testcase>
@@ -11,31 +11,31 @@
     </testcase>
     <testcase classname="MultiTenantManager - 테넌트 격리" name="T-5: 테넌트 복구" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-1: Free 티어 리소스 할당" time="0.001">
+    <testcase classname="MultiTenantManager - 리소스 관리" name="R-1: Free 티어 리소스 할당" time="0.002">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-2: Pro 티어 리소스 할당" time="0.001">
+    <testcase classname="MultiTenantManager - 리소스 관리" name="R-2: Pro 티어 리소스 할당" time="0.002">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-3: Enterprise 티어 리소스 할당" time="0.002">
+    <testcase classname="MultiTenantManager - 리소스 관리" name="R-3: Enterprise 티어 리소스 할당" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-4: 리소스 할당 추가" time="0.001">
+    <testcase classname="MultiTenantManager - 리소스 관리" name="R-4: 리소스 할당 추가" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - 리소스 관리" name="R-5: 리소스 할당 해제" time="0.001">
+    <testcase classname="MultiTenantManager - 리소스 관리" name="R-5: 리소스 할당 해제" time="0">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-1: 청구 정보 조회" time="0.011">
+    <testcase classname="MultiTenantManager - 청구 시스템" name="B-1: 청구 정보 조회" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-2: 사용량 기록" time="0.001">
+    <testcase classname="MultiTenantManager - 청구 시스템" name="B-2: 사용량 기록" time="0.01">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-3: 청구서 생성" time="0.001">
+    <testcase classname="MultiTenantManager - 청구 시스템" name="B-3: 청구서 생성" time="0.002">
     </testcase>
     <testcase classname="MultiTenantManager - 청구 시스템" name="B-4: 결제 처리" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 청구 시스템" name="B-5: 여러 청구서 관리" time="0">
+    <testcase classname="MultiTenantManager - 청구 시스템" name="B-5: 여러 청구서 관리" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-1: 테넌트 브랜딩 설정" time="0">
+    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-1: 테넌트 브랜딩 설정" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-2: 격리 정책 커스터마이제이션" time="0">
+    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-2: 격리 정책 커스터마이제이션" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-3: 네트워크 격리 설정" time="0.001">
+    <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-3: 네트워크 격리 설정" time="0">
     </testcase>
     <testcase classname="MultiTenantManager - 커스터마이제이션" name="C-4: 데이터 필터링 (Row-Level Security)" time="0.001">
     </testcase>
@@ -45,13 +45,13 @@
     </testcase>
     <testcase classname="MultiTenantManager - SLA 검증" name="S-2: Pro 티어 SLA 확인" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-3: Enterprise 티어 SLA 확인" time="0">
+    <testcase classname="MultiTenantManager - SLA 검증" name="S-3: Enterprise 티어 SLA 확인" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-4: 모니터링 메트릭 기록" time="0">
+    <testcase classname="MultiTenantManager - SLA 검증" name="S-4: 모니터링 메트릭 기록" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - SLA 검증" name="S-5: 자동 스케일링 정책" time="0">
+    <testcase classname="MultiTenantManager - SLA 검증" name="S-5: 자동 스케일링 정책" time="0.001">
     </testcase>
-    <testcase classname="MultiTenantManager - 통합 테스트" name="I-1: 전체 테넌트 목록" time="0">
+    <testcase classname="MultiTenantManager - 통합 테스트" name="I-1: 전체 테넌트 목록" time="0.001">
     </testcase>
     <testcase classname="MultiTenantManager - 통합 테스트" name="I-2: 테넌트 통계" time="0.001">
     </testcase>
