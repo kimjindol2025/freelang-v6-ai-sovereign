@@ -8,7 +8,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { execSync, spawnSync } from "child_process";
+import { spawnSync } from "child_process";
 
 export interface BuildConfig {
   projectRoot: string;
@@ -152,17 +152,34 @@ export class Builder {
 
   private runCommand(command: string, cwd: string): string {
     try {
-      const result = execSync(command, {
+      // 명령어와 인자를 안전하게 분리
+      const parts = command.split(/\s+/);
+      const cmd = parts[0];
+      const args = parts.slice(1);
+
+      const result = spawnSync(cmd, args, {
         cwd,
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "pipe"],
       });
-      return result;
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      if (result.status !== 0) {
+        console.error(`❌ Command failed: ${command}`);
+        if (result.stdout) console.error("STDOUT:", result.stdout);
+        if (result.stderr) console.error("STDERR:", result.stderr);
+        throw new Error(`Command execution failed with status ${result.status}: ${command}`);
+      }
+
+      return result.stdout || "";
     } catch (error) {
-      const err = error as any;
       console.error(`❌ Command failed: ${command}`);
-      if (err.stdout) console.error("STDOUT:", err.stdout);
-      if (err.stderr) console.error("STDERR:", err.stderr);
+      if (error instanceof Error) {
+        console.error("Error:", error.message);
+      }
       throw new Error(`Command execution failed: ${command}`);
     }
   }

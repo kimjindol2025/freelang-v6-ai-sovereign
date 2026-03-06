@@ -18,7 +18,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.8.0",
     "dotenv": "^16.0.0",
-    "handlebars": "^4.7.7"
+    "handlebars": "^4.7.7",
+    "shell-quote": "^1.8.1"
   },
   "devDependencies": {
     "@types/handlebars": "^4.1.0",

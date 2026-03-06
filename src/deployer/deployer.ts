@@ -16,7 +16,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { execSync, spawnSync } from "child_process";
+import { spawnSync } from "child_process";
 
 export type DeployTarget = "vercel" | "aws-ec2" | "docker" | "local";
 export type DeployStatus = "pending" | "building" | "deploying" | "running" | "failed" | "rolled_back";
@@ -292,10 +292,16 @@ WantedBy=multi-user.target
     // 1. 이미지 빌드
     console.log(`Building Docker image: ${imageName}`);
     try {
-      execSync(`docker build -t ${imageName} .`, {
+      const buildResult = spawnSync("docker", ["build", "-t", imageName, "."], {
         cwd: config.projectRoot,
         stdio: "inherit",
       });
+      if (buildResult.error) {
+        throw buildResult.error;
+      }
+      if (buildResult.status !== 0) {
+        throw new Error(`Docker build failed with status ${buildResult.status}`);
+      }
       console.log(`✅ Docker image built: ${imageName}`);
     } catch (error) {
       throw new Error(`Docker build failed: ${error}`);
@@ -303,23 +309,42 @@ WantedBy=multi-user.target
 
     // 2. 기존 컨테이너 중지
     try {
-      execSync(`docker stop ${containerName} 2>/dev/null || true`, { stdio: "pipe" });
-      execSync(`docker rm ${containerName} 2>/dev/null || true`, { stdio: "pipe" });
+      spawnSync("docker", ["stop", containerName], {
+        stdio: "pipe",
+        shell: false,
+      });
+      spawnSync("docker", ["rm", containerName], {
+        stdio: "pipe",
+        shell: false,
+      });
       console.log(`✅ Previous container cleaned up`);
     } catch (error) {
       // Ignore cleanup errors
     }
 
     // 3. 새 컨테이너 실행
-    const envArgs = Object.entries(config.environment || {})
-      .map(([key, value]) => `-e ${key}=${value}`)
-      .join(" ");
+    const runArgs = ["run", "-d", "--name", containerName, "-p", `${config.port}:${config.port}`];
 
-    const runCommand = `docker run -d --name ${containerName} -p ${config.port}:${config.port} ${envArgs} ${imageName}`;
+    // 안전하게 환경 변수 추가
+    for (const [key, value] of Object.entries(config.environment || {})) {
+      runArgs.push("-e");
+      runArgs.push(`${key}=${value}`);
+    }
+
+    runArgs.push(imageName);
 
     try {
-      const result = execSync(runCommand, { encoding: "utf-8", stdio: "pipe" });
-      const containerId = result.trim();
+      const result = spawnSync("docker", runArgs, {
+        encoding: "utf-8",
+        stdio: "pipe",
+      });
+      if (result.error) {
+        throw result.error;
+      }
+      if (result.status !== 0) {
+        throw new Error(`Docker run failed with status ${result.status}: ${result.stderr}`);
+      }
+      const containerId = (result.stdout || "").trim();
       console.log(`✅ Container started: ${containerId.slice(0, 12)}`);
     } catch (error) {
       throw new Error(`Docker run failed: ${error}`);
@@ -345,10 +370,16 @@ WantedBy=multi-user.target
     // 1. npm install (production mode)
     console.log("Installing dependencies...");
     try {
-      execSync("npm install --production", {
+      const installResult = spawnSync("npm", ["install", "--production"], {
         cwd: config.projectRoot,
         stdio: "inherit",
       });
+      if (installResult.error) {
+        throw installResult.error;
+      }
+      if (installResult.status !== 0) {
+        throw new Error(`npm install failed with status ${installResult.status}`);
+      }
       console.log("✅ Dependencies installed");
     } catch (error) {
       throw new Error(`npm install failed: ${error}`);
@@ -357,10 +388,16 @@ WantedBy=multi-user.target
     // 2. TypeScript 빌드
     console.log("Building TypeScript...");
     try {
-      execSync("npm run build", {
+      const buildResult = spawnSync("npm", ["run", "build"], {
         cwd: config.projectRoot,
         stdio: "inherit",
       });
+      if (buildResult.error) {
+        throw buildResult.error;
+      }
+      if (buildResult.status !== 0) {
+        throw new Error(`npm run build failed with status ${buildResult.status}`);
+      }
       console.log("✅ Build complete");
     } catch (error) {
       throw new Error(`npm run build failed: ${error}`);
@@ -484,9 +521,21 @@ WantedBy=multi-user.target
     try {
       if (deployment.target === "docker") {
         const containerName = `${deployment.id}-previous`;
-        execSync(`docker run -d --name ${containerName} ${deployment.previousVersion}`, {
+        const rollbackResult = spawnSync("docker", [
+          "run",
+          "-d",
+          "--name",
+          containerName,
+          deployment.previousVersion!,
+        ], {
           stdio: "inherit",
         });
+        if (rollbackResult.error) {
+          throw rollbackResult.error;
+        }
+        if (rollbackResult.status !== 0) {
+          throw new Error(`Docker run failed with status ${rollbackResult.status}`);
+        }
         console.log("✅ Rolled back to previous Docker image");
       } else {
         console.warn("⚠️  Rollback not fully implemented for this target");

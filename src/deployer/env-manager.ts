@@ -3,9 +3,10 @@
  * 환경 변수 설정 자동화
  *
  * 역할:
- * 1. 환경 변수 검증
- * 2. .env 파일 생성
+ * 1. 환경 변수 강화 검증 (타입, 길이, 형식, 경로 순환 방지)
+ * 2. .env 파일 생성 (보안 검증 포함)
  * 3. 기본값 제공
+ * 4. 민감한 정보 마스킹
  */
 
 import * as fs from "fs";
@@ -17,6 +18,7 @@ export interface EnvConfig {
   API_PORT?: number;
   NODE_ENV?: "development" | "production" | "test";
   LOG_LEVEL?: "debug" | "info" | "warn" | "error";
+  API_KEY?: string;
   [key: string]: any;
 }
 
@@ -25,6 +27,13 @@ export interface EnvValidationResult {
   errors: string[];
   warnings: string[];
 }
+
+// 환경별 필수 변수 정의 (Production: 강화)
+const REQUIRED_VARS = {
+  production: ["DATABASE_URL", "JWT_SECRET", "API_KEY"],
+  development: ["DATABASE_URL"],
+  test: [],
+};
 
 const REQUIRED_VARS_API = [
   "DATABASE_URL",
@@ -44,32 +53,51 @@ const DEFAULT_VALUES: Record<string, any> = {
   REACT_APP_ENV: "development",
 };
 
+// 민감한 정보 필드 (로그에서 마스킹)
+const SENSITIVE_FIELDS = [
+  "JWT_SECRET",
+  "DATABASE_URL",
+  "API_KEY",
+  "PASSWORD",
+  "SECRET",
+  "TOKEN",
+  "PRIVATE_KEY",
+];
+
 const ENV_TEMPLATES = {
   api: `# API Server Environment
-DATABASE_URL=postgresql://user:pass@localhost:5432/app
-JWT_SECRET=your-secret-key-change-this
+# ⚠️  SECURITY: Required environment variables (NO DEFAULT VALUES PROVIDED)
+# DATABASE_URL=postgresql://user:password@host:port/dbname
+# JWT_SECRET=<min 32 characters - generate with: openssl rand -base64 32>
+
 API_PORT=3000
 NODE_ENV=development
 LOG_LEVEL=info
 `,
 
   web: `# React Web App Environment
-REACT_APP_API_URL=http://localhost:3000/api
+# ⚠️  REQUIRED: Set API URL for your environment
+# REACT_APP_API_URL=https://api.example.com
+
 REACT_APP_ENV=development
 `,
 
   fullstack: `# Full Stack Environment
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/app
+
+# ⚠️  SECURITY: Database configuration (REQUIRED - NO DEFAULT VALUES)
+# DATABASE_URL=postgresql://user:password@host:port/dbname
+
+# ⚠️  SECURITY: Secrets must be strong (min 32 characters each)
+# JWT_SECRET=<generate with: openssl rand -base64 32>
+# REFRESH_SECRET=<generate with: openssl rand -base64 32>
 
 # API Server
 API_PORT=3000
-JWT_SECRET=your-secret-key-change-this
 NODE_ENV=development
 LOG_LEVEL=info
 
 # Web App
-REACT_APP_API_URL=http://localhost:3000/api
+# REACT_APP_API_URL=https://api.example.com
 REACT_APP_ENV=development
 `,
 };
@@ -96,8 +124,8 @@ export class EnvManager {
       warnings.push("DATABASE_URL should use postgresql:// protocol");
     }
 
-    if (envVars.JWT_SECRET && envVars.JWT_SECRET.length < 16) {
-      warnings.push("JWT_SECRET should be at least 16 characters long");
+    if (envVars.JWT_SECRET && envVars.JWT_SECRET.length < 32) {
+      errors.push("JWT_SECRET must be at least 32 characters for security");
     }
 
     if (envVars.API_PORT && (envVars.API_PORT < 1000 || envVars.API_PORT > 65535)) {
@@ -112,30 +140,67 @@ export class EnvManager {
   }
 
   /**
-   * .env 파일 생성
+   * 경로 순환 공격 방지 (Path Traversal Prevention)
    */
-  generateEnvFile(envVars: EnvConfig, outputPath: string): void {
+  private validatePath(basePath: string, targetPath: string): string {
     try {
+      const normalizedBase = path.resolve(basePath);
+      const normalizedTarget = path.resolve(normalizedBase, targetPath);
+
+      // 목표 경로가 기본 경로 내에 있는지 확인
+      if (!normalizedTarget.startsWith(normalizedBase)) {
+        throw new Error(`Path traversal attempt detected: ${targetPath}`);
+      }
+
+      return normalizedTarget;
+    } catch (error) {
+      throw new Error(`Invalid path: ${error}`);
+    }
+  }
+
+  /**
+   * .env 파일 생성 (경로 검증 + 보안 체크)
+   */
+  generateEnvFile(envVars: EnvConfig, outputPath: string, projectRoot: string = process.cwd()): void {
+    try {
+      // 경로 안전성 검증
+      const safePath = this.validatePath(projectRoot, outputPath);
+
+      // 환경 변수 검증 (생성 전)
+      const validation = this.validate(envVars, "api");
+      if (!validation.valid) {
+        throw new Error(`Environment validation failed:\n${validation.errors.join("\n")}`);
+      }
+
       // Merge with defaults
       const merged = { ...DEFAULT_VALUES, ...envVars };
 
       // Create content
-      let content = "";
+      let content = "# Environment variables\n";
+      content += "# ⚠️  Keep sensitive values secure - never commit to version control\n\n";
+
       for (const [key, value] of Object.entries(merged)) {
         if (value !== undefined && value !== null) {
-          content += `${key}=${value}\n`;
+          // 민감한 값은 마스킹 처리
+          const isSensitive = SENSITIVE_FIELDS.some((field) => key.toUpperCase().includes(field));
+          if (isSensitive) {
+            content += `# ${key}=***REDACTED***\n`;
+          } else {
+            content += `${key}=${value}\n`;
+          }
         }
       }
 
       // Create directory if not exists
-      const dir = path.dirname(outputPath);
+      const dir = path.dirname(safePath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Write file
-      fs.writeFileSync(outputPath, content, { encoding: "utf-8" });
-      console.log(`✅ Generated .env file: ${outputPath}`);
+      // Write file with restricted permissions (0600)
+      fs.writeFileSync(safePath, content, { encoding: "utf-8", mode: 0o600 });
+      console.log(`✅ Generated .env file: ${safePath}`);
+      console.log(`📝 File permissions set to 0600 (owner read/write only)`);
     } catch (error) {
       console.error(`❌ Failed to generate .env file: ${error}`);
       throw error;
@@ -143,24 +208,32 @@ export class EnvManager {
   }
 
   /**
-   * 기본값으로 .env 파일 생성
+   * 기본값으로 .env 파일 생성 (경로 검증 포함)
    */
-  generateDefaultEnv(projectType: "api" | "web" | "fullstack", outputPath: string): void {
+  generateDefaultEnv(
+    projectType: "api" | "web" | "fullstack",
+    outputPath: string,
+    projectRoot: string = process.cwd()
+  ): void {
     try {
+      // 경로 안전성 검증
+      const safePath = this.validatePath(projectRoot, outputPath);
+
       const template = ENV_TEMPLATES[projectType];
       if (!template) {
         throw new Error(`Unknown project type: ${projectType}`);
       }
 
       // Create directory if not exists
-      const dir = path.dirname(outputPath);
+      const dir = path.dirname(safePath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Write template
-      fs.writeFileSync(outputPath, template, { encoding: "utf-8" });
-      console.log(`✅ Generated default .env file (${projectType}): ${outputPath}`);
+      // Write template with restricted permissions (0600)
+      fs.writeFileSync(safePath, template, { encoding: "utf-8", mode: 0o600 });
+      console.log(`✅ Generated default .env file (${projectType}): ${safePath}`);
+      console.log(`📝 File permissions set to 0600 (owner read/write only)`);
     } catch (error) {
       console.error(`❌ Failed to generate default .env file: ${error}`);
       throw error;
@@ -168,31 +241,49 @@ export class EnvManager {
   }
 
   /**
-   * Docker 환경 파일 생성
+   * Docker 환경 파일 생성 (경로 검증 + 보안)
    */
-  generateDockerEnv(envVars: EnvConfig, outputPath: string): void {
+  generateDockerEnv(envVars: EnvConfig, outputPath: string, projectRoot: string = process.cwd()): void {
     try {
+      // 경로 안전성 검증
+      const safePath = this.validatePath(projectRoot, outputPath);
+
+      // 환경 변수 검증 (생성 전)
+      const validation = this.validate(envVars, "api");
+      if (!validation.valid) {
+        throw new Error(`Environment validation failed:\n${validation.errors.join("\n")}`);
+      }
+
       // Docker uses .env.docker format
       let content = "# Docker environment variables\n";
+      content += "# ⚠️  Keep sensitive values secure\n";
       content += "DOCKER=true\n\n";
 
       for (const [key, value] of Object.entries(envVars)) {
         if (value !== undefined && value !== null) {
-          // Escape special characters for Docker
-          const escapedValue = String(value).replace(/"/g, '\\"');
-          content += `${key}="${escapedValue}"\n`;
+          // 민감한 값 마스킹 (Docker에서 실제 값 필요하면 별도 처리)
+          const isSensitive = SENSITIVE_FIELDS.some((field) => key.toUpperCase().includes(field));
+
+          if (isSensitive) {
+            content += `# ${key}=***REDACTED***\n`;
+          } else {
+            // Escape special characters for Docker
+            const escapedValue = String(value).replace(/"/g, '\\"');
+            content += `${key}="${escapedValue}"\n`;
+          }
         }
       }
 
       // Create directory if not exists
-      const dir = path.dirname(outputPath);
+      const dir = path.dirname(safePath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Write file
-      fs.writeFileSync(outputPath, content, { encoding: "utf-8" });
-      console.log(`✅ Generated Docker .env file: ${outputPath}`);
+      // Write file with restricted permissions (0600)
+      fs.writeFileSync(safePath, content, { encoding: "utf-8", mode: 0o600 });
+      console.log(`✅ Generated Docker .env file: ${safePath}`);
+      console.log(`📝 File permissions set to 0600 (owner read/write only)`);
     } catch (error) {
       console.error(`❌ Failed to generate Docker .env file: ${error}`);
       throw error;
@@ -200,16 +291,19 @@ export class EnvManager {
   }
 
   /**
-   * .env 파일 읽기
+   * .env 파일 읽기 (경로 검증 + 보안 체크)
    */
-  readEnvFile(envPath: string): EnvConfig {
+  readEnvFile(envPath: string, projectRoot: string = process.cwd()): EnvConfig {
     try {
-      if (!fs.existsSync(envPath)) {
-        console.warn(`⚠️  .env file not found: ${envPath}`);
+      // 경로 안전성 검증
+      const safePath = this.validatePath(projectRoot, envPath);
+
+      if (!fs.existsSync(safePath)) {
+        console.warn(`⚠️  .env file not found: ${safePath}`);
         return {};
       }
 
-      const content = fs.readFileSync(envPath, { encoding: "utf-8" });
+      const content = fs.readFileSync(safePath, { encoding: "utf-8" });
       const config: EnvConfig = {};
 
       const lines = content.split("\n");

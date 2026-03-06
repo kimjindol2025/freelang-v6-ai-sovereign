@@ -24,7 +24,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { execSync, spawnSync } from "child_process";
+import { spawnSync } from "child_process";
 
 export type CloudProvider = "vercel" | "aws" | "gcp";
 export type Environment = "development" | "staging" | "production";
@@ -285,11 +285,18 @@ export class VercelDeployer {
   private async buildAndDeploy(config: CloudDeployConfig): Promise<void> {
     console.log("Building project...");
     try {
-      execSync("npm run build", {
+      const buildResult = spawnSync("npm", ["run", "build"], {
         cwd: config.projectRoot,
         stdio: "inherit",
       });
-      console.log("✅ Build successful");
+      if (buildResult.error) {
+        throw buildResult.error;
+      }
+      if (buildResult.status === 0) {
+        console.log("✅ Build successful");
+      } else {
+        throw new Error(`Build failed with status ${buildResult.status}`);
+      }
     } catch (error) {
       // Test mode: continue even if build fails (for testing without actual project)
       console.warn(`⚠️  Build skipped or failed (test mode): ${error}`);
@@ -297,7 +304,7 @@ export class VercelDeployer {
 
     console.log("Deploying to Vercel...");
     // 실제 배포는 vercel CLI 또는 Vercel API 사용
-    // execSync("vercel deploy --prod", { cwd: config.projectRoot });
+    // const deployResult = spawnSync("vercel", ["deploy", "--prod"], { cwd: config.projectRoot });
   }
 
   private generateVercelCDNUrl(domain: string): string {
@@ -476,8 +483,14 @@ export class AWSDeployer {
   }
 
   private async buildAndPushECRImage(config: CloudDeployConfig): Promise<string> {
-    const accountId = "123456789012"; // Replace with actual AWS account ID
-    const region = "us-east-1";
+    // Get AWS credentials from environment variables
+    const accountId = process.env.AWS_ACCOUNT_ID;
+    const region = process.env.AWS_REGION || "us-east-1";
+
+    if (!accountId) {
+      throw new Error("AWS_ACCOUNT_ID environment variable is required");
+    }
+
     const imageName = `${accountId}.dkr.ecr.${region}.amazonaws.com/${config.projectName}:${config.version}`;
 
     console.log(`Building and pushing ECR image: ${imageName}`);
@@ -777,8 +790,14 @@ export class GCPDeployer {
   private async buildAndPushArtifactRegistry(
     config: CloudDeployConfig
   ): Promise<string> {
-    const projectId = "my-gcp-project";
-    const region = "us-central1";
+    // Get GCP credentials from environment variables
+    const projectId = process.env.GCP_PROJECT_ID;
+    const region = process.env.GCP_REGION || "us-central1";
+
+    if (!projectId) {
+      throw new Error("GCP_PROJECT_ID environment variable is required");
+    }
+
     const imageName = `${region}-docker.pkg.dev/${projectId}/${config.projectName}/${config.projectName}:${config.version}`;
 
     console.log(`Building and pushing to Artifact Registry: ${imageName}`);
