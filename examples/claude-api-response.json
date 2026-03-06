@@ -1,0 +1,78 @@
+{
+  "version": "6.0",
+  "description": "Claude API 응답 처리 - 토큰 사용량 분석",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "API 응답 데이터 처리: 토큰 통계 계산"
+    },
+    {
+      "type": "var",
+      "name": "token_counts",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 245},
+          {"type": "literal", "value_type": "i32", "value": 512},
+          {"type": "literal", "value_type": "i32", "value": 189},
+          {"type": "literal", "value_type": "i32", "value": 623},
+          {"type": "literal", "value_type": "i32", "value": 401}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.reduce",
+      "args": [
+        {"type": "ref", "name": "token_counts"},
+        {
+          "type": "lambda",
+          "params": [
+            {"name": "total", "type": "i32"},
+            {"name": "count", "type": "i32"}
+          ],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "+",
+              "left": {"type": "ref", "name": "total"},
+              "right": {"type": "ref", "name": "count"}
+            }
+          ]
+        },
+        {"type": "literal", "value_type": "i32", "value": 0}
+      ],
+      "assign_to": "total_tokens"
+    },
+    {
+      "type": "call",
+      "function": "Array.reduce",
+      "args": [
+        {"type": "ref", "name": "token_counts"},
+        {
+          "type": "lambda",
+          "params": [
+            {"name": "max", "type": "i32"},
+            {"name": "count", "type": "i32"}
+          ],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": ">",
+              "left": {"type": "ref", "name": "count"},
+              "right": {"type": "ref", "name": "max"}
+            }
+          ]
+        },
+        {"type": "literal", "value_type": "i32", "value": 0}
+      ],
+      "assign_to": "max_tokens"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "total_tokens"}]
+    }
+  ]
+}

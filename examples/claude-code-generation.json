@@ -1,0 +1,65 @@
+{
+  "version": "6.0",
+  "description": "Claude 코드 생성 패턴 - 함수 인터페이스 생성",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Claude가 자주 생성하는 패턴: 함수 시그니처 목록 생성"
+    },
+    {
+      "type": "var",
+      "name": "functions",
+      "value_type": "Array<string>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "string", "value": "compile"},
+          {"type": "literal", "value_type": "string", "value": "execute"},
+          {"type": "literal", "value_type": "string", "value": "validate"},
+          {"type": "literal", "value_type": "string", "value": "optimize"}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "functions"},
+        {
+          "type": "lambda",
+          "params": [{"name": "func", "type": "string"}],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.join",
+              "args": [
+                {
+                  "type": "array",
+                  "elements": [
+                    {"type": "literal", "value_type": "string", "value": "function "},
+                    {"type": "ref", "name": "func"},
+                    {"type": "literal", "value_type": "string", "value": "(code) { /* ... */ }"}
+                  ]
+                },
+                {"type": "literal", "value_type": "string", "value": ""}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "signatures"
+    },
+    {
+      "type": "loop",
+      "iterator": "sig",
+      "range": {"type": "ref", "name": "signatures"},
+      "body": [
+        {
+          "type": "call",
+          "function": "IO.print",
+          "args": [{"type": "ref", "name": "sig"}]
+        }
+      ]
+    }
+  ]
+}

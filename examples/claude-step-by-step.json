@@ -1,0 +1,66 @@
+{
+  "version": "6.0",
+  "description": "Claude 단계별 처리 - 문제 해결 워크플로우",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Claude의 사고 과정: 단계별 분석 → 검증 → 최적화"
+    },
+    {
+      "type": "var",
+      "name": "steps",
+      "value_type": "Array<string>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "string", "value": "analyze"},
+          {"type": "literal", "value_type": "string", "value": "validate"},
+          {"type": "literal", "value_type": "string", "value": "optimize"},
+          {"type": "literal", "value_type": "string", "value": "implement"}
+        ]
+      }
+    },
+    {
+      "type": "var",
+      "name": "quality_scores",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 85},
+          {"type": "literal", "value_type": "i32", "value": 90},
+          {"type": "literal", "value_type": "i32", "value": 92},
+          {"type": "literal", "value_type": "i32", "value": 95}
+        ]
+      }
+    },
+    {
+      "type": "loop",
+      "iterator": "i",
+      "range": {"type": "ref", "name": "steps"},
+      "body": [
+        {
+          "type": "call",
+          "function": "IO.print",
+          "args": [
+            {
+              "type": "call",
+              "function": "String.join",
+              "args": [
+                {
+                  "type": "array",
+                  "elements": [
+                    {"type": "literal", "value_type": "string", "value": "Step: "},
+                    {"type": "ref", "name": "i"},
+                    {"type": "literal", "value_type": "string", "value": " → Quality Score"}
+                  ]
+                },
+                {"type": "literal", "value_type": "string", "value": ""}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
