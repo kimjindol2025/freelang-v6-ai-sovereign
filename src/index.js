@@ -101,11 +101,27 @@ class VTRuntime {
       return;
     }
 
-    // for 루프: (for iterator range body)
-    const forMatch = expr.match(/^\(for\s+(\w+)\s+\(array\s+([\d\s]+)\)\s+\(do\s+(.+?)\)\)$/);
+    // for 루프: (for iterator range body) 또는 (for iterator varname (do body))
+    const forMatch = expr.match(/^\(for\s+(\w+)\s+(.+?)\s+\(do\s+(.+)\)\)$/);
     if (forMatch) {
-      const [, iterator, elementsStr, bodyExpr] = forMatch;
-      const elements = elementsStr.trim().split(/\s+/).map(e => Number(e));
+      const [, iterator, rangeExpr, bodyExpr] = forMatch;
+
+      // range 평가: 배열 리터럴 또는 변수 참조
+      let elements = [];
+      if (rangeExpr.startsWith('(array')) {
+        // (array 1 2 3) 형태
+        const arrayMatch = rangeExpr.match(/^\(array\s+([\d\s]+)\)$/);
+        if (arrayMatch) {
+          elements = arrayMatch[1].trim().split(/\s+/).map(e => Number(e));
+        }
+      } else {
+        // 변수 참조
+        const value = this.evaluateExpression(rangeExpr);
+        if (Array.isArray(value)) {
+          elements = value;
+        }
+      }
+
       for (const elem of elements) {
         this.scope.set(iterator, elem);
         this.executeSExpression(bodyExpr);
@@ -159,33 +175,73 @@ class VTRuntime {
     }
 
     // 산술 연산: (+ a b), (- a b), (* a b), (/ a b), (% a b)
-    const arithmeticMatch = expr.match(/^\(([+\-*/%])\s+(.+?)\s+(.+)\)$/);
-    if (arithmeticMatch) {
-      const [, op, left, right] = arithmeticMatch;
-      const leftVal = this.evaluateExpression(left);
-      const rightVal = this.evaluateExpression(right);
-      switch (op) {
-        case '+': return leftVal + rightVal;
-        case '-': return leftVal - rightVal;
-        case '*': return leftVal * rightVal;
-        case '/': return leftVal / rightVal;
-        case '%': return leftVal % rightVal;
+    const arithmeticOp = expr.match(/^\(([+\-*/%])/);
+    if (arithmeticOp) {
+      const operator = arithmeticOp[1];
+      const content = expr.slice(operator.length + 2, -1).trim();
+
+      // Split by the last space that's not inside parentheses
+      let depth = 0;
+      let splitIdx = -1;
+      for (let i = content.length - 1; i >= 0; i--) {
+        if (content[i] === ')') depth++;
+        else if (content[i] === '(') depth--;
+        else if (content[i] === ' ' && depth === 0) {
+          splitIdx = i;
+          break;
+        }
+      }
+
+      if (splitIdx > 0) {
+        const left = content.substring(0, splitIdx);
+        const right = content.substring(splitIdx + 1);
+        const leftVal = this.evaluateExpression(left);
+        const rightVal = this.evaluateExpression(right);
+        switch (operator) {
+          case '+': return leftVal + rightVal;
+          case '-': return leftVal - rightVal;
+          case '*': return leftVal * rightVal;
+          case '/': return leftVal / rightVal;
+          case '%': return leftVal % rightVal;
+        }
       }
     }
 
     // 비교 연산: (== a b), (!= a b), (< a b), (> a b), (<= a b), (>= a b)
-    const comparisonMatch = expr.match(/^\((==|!=|<|>|<=|>=)\s+(.+?)\s+(.+)\)$/);
+    const comparisonMatch = expr.match(/^\((==|!=|<|>|<=|>=)\s+(.+)\s+([^()]*|.+)\)$/);
     if (comparisonMatch) {
-      const [, op, left, right] = comparisonMatch;
-      const leftVal = this.evaluateExpression(left);
-      const rightVal = this.evaluateExpression(right);
-      switch (op) {
-        case '==': return leftVal === rightVal;
-        case '!=': return leftVal !== rightVal;
-        case '<': return leftVal < rightVal;
-        case '>': return leftVal > rightVal;
-        case '<=': return leftVal <= rightVal;
-        case '>=': return leftVal >= rightVal;
+      const compOp = expr.match(/^\((==|!=|<|>|<=|>=)/);
+      if (compOp) {
+        const operator = compOp[1];
+        // Extract left and right operands by finding the split point
+        const content = expr.slice(operator.length + 2, -1).trim();
+
+        // Split by the last space that's not inside parentheses
+        let depth = 0;
+        let splitIdx = -1;
+        for (let i = content.length - 1; i >= 0; i--) {
+          if (content[i] === ')') depth++;
+          else if (content[i] === '(') depth--;
+          else if (content[i] === ' ' && depth === 0) {
+            splitIdx = i;
+            break;
+          }
+        }
+
+        if (splitIdx > 0) {
+          const left = content.substring(0, splitIdx);
+          const right = content.substring(splitIdx + 1);
+          const leftVal = this.evaluateExpression(left);
+          const rightVal = this.evaluateExpression(right);
+          switch (operator) {
+            case '==': return leftVal === rightVal;
+            case '!=': return leftVal !== rightVal;
+            case '<': return leftVal < rightVal;
+            case '>': return leftVal > rightVal;
+            case '<=': return leftVal <= rightVal;
+            case '>=': return leftVal >= rightVal;
+          }
+        }
       }
     }
 
@@ -210,6 +266,13 @@ class VTRuntime {
         return array[Math.floor(index)];
       }
       return null;
+    }
+
+    // 함수 호출: (call function arg1 arg2 ...)
+    const callExpr = expr.match(/^\(call\s+(\S+)\s*(.*)\)$/);
+    if (callExpr) {
+      const [, funcName, argsStr] = callExpr;
+      return this.executeFunction(funcName, argsStr);
     }
 
     // 함수: (fn (params) body)

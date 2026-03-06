@@ -1,0 +1,157 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.298Z",
+    "metadata": {
+      "filename": "data-aggregation.json",
+      "filePath": "examples/data-aggregation.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "배열 집계 예제 - 모든 숫자의 합 계산 (reduce)"
+          },
+          {
+            "type": "var",
+            "name": "numbers",
+            "value_type": "Array<i32>",
+            "value": {
+              "type": "array",
+              "elements": [
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 10
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 20
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 30
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 40
+                }
+              ]
+            }
+          },
+          {
+            "type": "comment",
+            "text": "초기 누적값 (accumulator) 설정"
+          },
+          {
+            "type": "var",
+            "name": "initial_sum",
+            "value_type": "i32",
+            "value": 0
+          },
+          {
+            "type": "comment",
+            "text": "람다 함수를 사용한 reduce: acc + current"
+          },
+          {
+            "type": "call",
+            "function": "Array.reduce",
+            "args": [
+              {
+                "type": "ref",
+                "name": "numbers"
+              },
+              {
+                "type": "ref",
+                "name": "initial_sum"
+              },
+              {
+                "type": "lambda",
+                "params": [
+                  "acc",
+                  "current"
+                ],
+                "body": [
+                  {
+                    "type": "arithmetic",
+                    "operator": "+",
+                    "left": {
+                      "type": "ref",
+                      "name": "acc"
+                    },
+                    "right": {
+                      "type": "ref",
+                      "name": "current"
+                    }
+                  }
+                ]
+              }
+            ],
+            "assign_to": "sum"
+          },
+          {
+            "type": "comment",
+            "text": "합계 결과 출력"
+          },
+          {
+            "type": "call",
+            "function": "IO.print",
+            "args": [
+              {
+                "type": "ref",
+                "name": "sum"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\n(define numbers (array 10 20 30 40))\n; 초기 누적값 (accumulator) 설정\n(define initial_sum 0)\n; 람다 함수를 사용한 reduce: acc + current\n(define sum (call Array.reduce numbers initial_sum (fn (acc current) (+ acc current))))\n; 합계 결과 출력\n(call IO.print sum)",
+      "errors": [],
+      "vtCodeLength": 330
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션"
+      ],
+      "executionTime": 1,
+      "memoryUsage": 0.0047149658203125,
+      "instructionCount": 34
+    },
+    "performance": {
+      "totalProcessingTime": 1,
+      "compilationPhase": "included in total",
+      "executionPhase": 1
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: data-aggregation.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 330 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\n(define numbers (array 10 20 30 40))\n; 초기 누적값 (accumulator) 설정\n(define initial_sum 0)\n; 람다 함수를 사용한 reduce: acc + current\n(define sum (call Array.reduce numbers initial_sum (fn (acc current) (+ acc current))))\n; 합계 결과 출력\n... (1개 줄 생략)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 1ms\n- **메모리 사용량**: 0.00MB\n- **명령어 수**: 34\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (88개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 1ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 34 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: data-aggregation.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: data-aggregation.json",
+      "파일명": "data-aggregation.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 1,
+      "메모리사용mb": "0.00",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: data-aggregation.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 1ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 34 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\n(define numbers (array 10 20 30 40))\n; 초기 누적값 (accumulator) 설정\n(define initial_sum 0)\n; 람다 함수를 사용한 reduce: acc + current\n(define sum (call Array.reduce numbers initial_sum (fn (acc current) (+ acc current))))\n; 합계 결과 출력\n(call IO.print sum)\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (88개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.298Z\n- **처리 시간**: 1ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

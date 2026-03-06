@@ -304,7 +304,10 @@ class AutoPoster {
 
     return {
       timestamp: new Date().toISOString(),
-      metadata: metadata,
+      metadata: {
+        ...metadata,
+        code: code, // 원본 코드도 메타데이터에 포함
+      },
       compilation: {
         success: compileResult.success,
         vtCode: compileResult.code,

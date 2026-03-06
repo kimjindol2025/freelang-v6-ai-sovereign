@@ -1,0 +1,232 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.296Z",
+    "metadata": {
+      "filename": "csv-parsing.json",
+      "filePath": "examples/csv-parsing.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "CSV 파싱 예제 - 행과 열 분석"
+          },
+          {
+            "type": "var",
+            "name": "csv_data",
+            "value_type": "string",
+            "value": "name,age,city\nAlice,30,Seoul\nBob,25,Busan\nCharlie,35,Incheon"
+          },
+          {
+            "type": "comment",
+            "text": "CSV를 줄(newline)로 분할"
+          },
+          {
+            "type": "call",
+            "function": "String.split",
+            "args": [
+              {
+                "type": "ref",
+                "name": "csv_data"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "\n"
+              }
+            ],
+            "assign_to": "rows"
+          },
+          {
+            "type": "comment",
+            "text": "헤더 추출 (첫 번째 행)"
+          },
+          {
+            "type": "call",
+            "function": "Array.get",
+            "args": [
+              {
+                "type": "ref",
+                "name": "rows"
+              },
+              {
+                "type": "literal",
+                "value_type": "i32",
+                "value": 0
+              }
+            ],
+            "assign_to": "header_line"
+          },
+          {
+            "type": "comment",
+            "text": "헤더를 쉼표로 분할"
+          },
+          {
+            "type": "call",
+            "function": "String.split",
+            "args": [
+              {
+                "type": "ref",
+                "name": "header_line"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": ","
+              }
+            ],
+            "assign_to": "headers"
+          },
+          {
+            "type": "comment",
+            "text": "나머지 행들 추출 (데이터 행)"
+          },
+          {
+            "type": "call",
+            "function": "Array.slice",
+            "args": [
+              {
+                "type": "ref",
+                "name": "rows"
+              },
+              {
+                "type": "literal",
+                "value_type": "i32",
+                "value": 1
+              }
+            ],
+            "assign_to": "data_rows"
+          },
+          {
+            "type": "comment",
+            "text": "각 데이터 행을 열로 분할"
+          },
+          {
+            "type": "call",
+            "function": "Array.map",
+            "args": [
+              {
+                "type": "ref",
+                "name": "data_rows"
+              },
+              {
+                "type": "lambda",
+                "params": [
+                  "row"
+                ],
+                "body": [
+                  {
+                    "type": "call",
+                    "function": "String.split",
+                    "args": [
+                      {
+                        "type": "ref",
+                        "name": "row"
+                      },
+                      {
+                        "type": "literal",
+                        "value_type": "string",
+                        "value": ","
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "assign_to": "parsed_rows"
+          },
+          {
+            "type": "comment",
+            "text": "헤더와 파싱된 데이터 출력"
+          },
+          {
+            "type": "call",
+            "function": "IO.print",
+            "args": [
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "Headers:"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "IO.print_array",
+            "args": [
+              {
+                "type": "ref",
+                "name": "headers"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "IO.print",
+            "args": [
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "Data rows:"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "IO.print_array",
+            "args": [
+              {
+                "type": "ref",
+                "name": "parsed_rows"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; CSV 파싱 예제 - 행과 열 분석\n(define csv_data \"name,age,city\nAlice,30,Seoul\nBob,25,Busan\nCharlie,35,Incheon\")\n; CSV를 줄(newline)로 분할\n(define rows (call String.split csv_data \"\n\"))\n; 헤더 추출 (첫 번째 행)\n(define header_line (call Array.get rows 0))\n; 헤더를 쉼표로 분할\n(define headers (call String.split header_line \",\"))\n; 나머지 행들 추출 (데이터 행)\n(define data_rows (call Array.slice rows 1))\n; 각 데이터 행을 열로 분할\n(define parsed_rows (call Array.map data_rows (fn (row) (call String.split row \",\"))))\n; 헤더와 파싱된 데이터 출력\n(call IO.print \"Headers:\")\n(call IO.print_array headers)\n(call IO.print \"Data rows:\")\n(call IO.print_array parsed_rows)",
+      "errors": [],
+      "vtCodeLength": 662
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션"
+      ],
+      "executionTime": 0,
+      "memoryUsage": 0.01873779296875,
+      "instructionCount": 30
+    },
+    "performance": {
+      "totalProcessingTime": 0,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: csv-parsing.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 662 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; CSV 파싱 예제 - 행과 열 분석\n(define csv_data \"name,age,city\nAlice,30,Seoul\nBob,25,Busan\nCharlie,35,Incheon\")\n; CSV를 줄(newline)로 분할\n(define rows (call String.split csv_data \"\n... (14개 줄 생략)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.02MB\n- **명령어 수**: 30\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"CSV 파싱 예제 - 행과 열 분석\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"csv_data\",\n      \"value_type\": \"string\",\n      \"value\": \"name,age,city\\nAlice,30,Seoul\\nBob,25,Busan\\nCharlie,35,Incheon\"\n    },\n    {\n      \"type\": \"comment\",\n... (164개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.02MB |\n| 명령어 수 | 30 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: csv-parsing.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: csv-parsing.json",
+      "파일명": "csv-parsing.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "0.02",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: csv-parsing.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.02MB |\n| 명령어 수 | 30 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; CSV 파싱 예제 - 행과 열 분석\n(define csv_data \"name,age,city\nAlice,30,Seoul\nBob,25,Busan\nCharlie,35,Incheon\")\n; CSV를 줄(newline)로 분할\n(define rows (call String.split csv_data \"\n\"))\n; 헤더 추출 (첫 번째 행)\n(define header_line (call Array.get rows 0))\n; 헤더를 쉼표로 분할\n(define headers (call String.split header_line \",\"))\n... (9개 줄 생략)\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"CSV 파싱 예제 - 행과 열 분석\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"csv_data\",\n      \"value_type\": \"string\",\n      \"value\": \"name,age,city\\nAlice,30,Seoul\\nBob,25,Busan\\nCharlie,35,Incheon\"\n    },\n    {\n      \"type\": \"comment\",\n... (164개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.296Z\n- **처리 시간**: 0ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

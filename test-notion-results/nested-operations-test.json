@@ -1,0 +1,290 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.307Z",
+    "metadata": {
+      "filename": "nested-operations.json",
+      "filePath": "examples/nested-operations.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "중첩된 작업 예제 - 다중 배열 처리"
+          },
+          {
+            "type": "var",
+            "name": "matrix",
+            "value_type": "Array<Array<i32>>",
+            "value": {
+              "type": "array",
+              "elements": [
+                {
+                  "type": "array",
+                  "elements": [
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 1
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 2
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 3
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "elements": [
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 4
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 5
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 6
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "elements": [
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 7
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 8
+                    },
+                    {
+                      "type": "literal",
+                      "value_type": "i32",
+                      "value": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "comment",
+            "text": "각 행의 합 계산"
+          },
+          {
+            "type": "call",
+            "function": "Array.map",
+            "args": [
+              {
+                "type": "ref",
+                "name": "matrix"
+              },
+              {
+                "type": "lambda",
+                "params": [
+                  "row"
+                ],
+                "body": [
+                  {
+                    "type": "call",
+                    "function": "Array.reduce",
+                    "args": [
+                      {
+                        "type": "ref",
+                        "name": "row"
+                      },
+                      {
+                        "type": "literal",
+                        "value_type": "i32",
+                        "value": 0
+                      },
+                      {
+                        "type": "lambda",
+                        "params": [
+                          "acc",
+                          "val"
+                        ],
+                        "body": [
+                          {
+                            "type": "arithmetic",
+                            "operator": "+",
+                            "left": {
+                              "type": "ref",
+                              "name": "acc"
+                            },
+                            "right": {
+                              "type": "ref",
+                              "name": "val"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "assign_to": "row_sums"
+          },
+          {
+            "type": "comment",
+            "text": "전체 합계 계산 (모든 행의 합을 더함)"
+          },
+          {
+            "type": "call",
+            "function": "Array.reduce",
+            "args": [
+              {
+                "type": "ref",
+                "name": "row_sums"
+              },
+              {
+                "type": "literal",
+                "value_type": "i32",
+                "value": 0
+              },
+              {
+                "type": "lambda",
+                "params": [
+                  "total",
+                  "sum"
+                ],
+                "body": [
+                  {
+                    "type": "arithmetic",
+                    "operator": "+",
+                    "left": {
+                      "type": "ref",
+                      "name": "total"
+                    },
+                    "right": {
+                      "type": "ref",
+                      "name": "sum"
+                    }
+                  }
+                ]
+              }
+            ],
+            "assign_to": "total_sum"
+          },
+          {
+            "type": "comment",
+            "text": "결과 출력"
+          },
+          {
+            "type": "call",
+            "function": "IO.print",
+            "args": [
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "Row sums:"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "IO.print_array",
+            "args": [
+              {
+                "type": "ref",
+                "name": "row_sums"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "IO.print",
+            "args": [
+              {
+                "type": "call",
+                "function": "String.concat",
+                "args": [
+                  {
+                    "type": "literal",
+                    "value_type": "string",
+                    "value": "Total sum: "
+                  },
+                  {
+                    "type": "ref",
+                    "name": "total_sum"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 중첩된 작업 예제 - 다중 배열 처리\n(define matrix (array (array 1 2 3) (array 4 5 6) (array 7 8 9)))\n; 각 행의 합 계산\n(define row_sums (call Array.map matrix (fn (row) (call Array.reduce row 0 (fn (acc val) (+ acc val))))))\n; 전체 합계 계산 (모든 행의 합을 더함)\n(define total_sum (call Array.reduce row_sums 0 (fn (total sum) (+ total sum))))\n; 결과 출력\n(call IO.print \"Row sums:\")\n(call IO.print_array row_sums)\n(call IO.print (call String.concat \"Total sum: \" total_sum))",
+      "errors": [],
+      "vtCodeLength": 497
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[SUCCESS] GitHub API 요청 완료",
+        "Repository 정보를 수집했습니다.",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "(call Markdown.build doc)",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션"
+      ],
+      "executionTime": 0,
+      "memoryUsage": 0.00051116943359375,
+      "instructionCount": 62
+    },
+    "performance": {
+      "totalProcessingTime": 1,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: nested-operations.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 497 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 중첩된 작업 예제 - 다중 배열 처리\n(define matrix (array (array 1 2 3) (array 4 5 6) (array 7 8 9)))\n; 각 행의 합 계산\n(define row_sums (call Array.map matrix (fn (row) (call Array.reduce row 0 (fn (acc val) (+ acc val))))))\n; 전체 합계 계산 (모든 행의 합을 더함)\n(define total_sum (call Array.reduce row_sums 0 (fn (total sum) (+ total sum))))\n; 결과 출력\n... (3개 줄 생략)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.00MB\n- **명령어 수**: 62\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"중첩된 작업 예제 - 다중 배열 처리\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"matrix\",\n      \"value_type\": \"Array<Array<i32>>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (210개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 62 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: nested-operations.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: nested-operations.json",
+      "파일명": "nested-operations.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "0.00",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: nested-operations.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 62 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 중첩된 작업 예제 - 다중 배열 처리\n(define matrix (array (array 1 2 3) (array 4 5 6) (array 7 8 9)))\n; 각 행의 합 계산\n(define row_sums (call Array.map matrix (fn (row) (call Array.reduce row 0 (fn (acc val) (+ acc val))))))\n; 전체 합계 계산 (모든 행의 합을 더함)\n(define total_sum (call Array.reduce row_sums 0 (fn (total sum) (+ total sum))))\n; 결과 출력\n(call IO.print \"Row sums:\")\n(call IO.print_array row_sums)\n(call IO.print (call String.concat \"Total sum: \" total_sum))\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"중첩된 작업 예제 - 다중 배열 처리\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"matrix\",\n      \"value_type\": \"Array<Array<i32>>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (210개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.307Z\n- **처리 시간**: 1ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

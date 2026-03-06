@@ -1,0 +1,106 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.303Z",
+    "metadata": {
+      "filename": "http-example.json",
+      "filePath": "examples/http-example.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "HTTP 요청 및 데이터 처리 예제"
+          },
+          {
+            "type": "var",
+            "name": "url",
+            "value_type": "string",
+            "value": "https://api.github.com/repos/freelang-community/freelang-v6"
+          },
+          {
+            "type": "call",
+            "function": "HTTP.get",
+            "args": [
+              {
+                "type": "ref",
+                "name": "url"
+              }
+            ],
+            "assign_to": "response"
+          },
+          {
+            "type": "call",
+            "function": "print",
+            "args": [
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "[SUCCESS] GitHub API 요청 완료"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "print",
+            "args": [
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "Repository 정보를 수집했습니다."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; HTTP 요청 및 데이터 처리 예제\n(define url \"https://api.github.com/repos/freelang-community/freelang-v6\")\n(define response (call HTTP.get url))\n(call print \"[SUCCESS] GitHub API 요청 완료\")\n(call print \"Repository 정보를 수집했습니다.\")",
+      "errors": [],
+      "vtCodeLength": 271
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[SUCCESS] GitHub API 요청 완료",
+        "Repository 정보를 수집했습니다."
+      ],
+      "executionTime": 0,
+      "memoryUsage": -0.4875030517578125,
+      "instructionCount": 44
+    },
+    "performance": {
+      "totalProcessingTime": 0,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: http-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 271 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; HTTP 요청 및 데이터 처리 예제\n(define url \"https://api.github.com/repos/freelang-community/freelang-v6\")\n(define response (call HTTP.get url))\n(call print \"[SUCCESS] GitHub API 요청 완료\")\n(call print \"Repository 정보를 수집했습니다.\")\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: -0.49MB\n- **명령어 수**: 44\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"HTTP 요청 및 데이터 처리 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"url\",\n      \"value_type\": \"string\",\n      \"value\": \"https://api.github.com/repos/freelang-community/freelang-v6\"\n    },\n    {\n      \"type\": \"call\",\n... (33개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | -0.49MB |\n| 명령어 수 | 44 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: http-example.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: http-example.json",
+      "파일명": "http-example.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "-0.49",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: http-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | -0.49MB |\n| 명령어 수 | 44 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; HTTP 요청 및 데이터 처리 예제\n(define url \"https://api.github.com/repos/freelang-community/freelang-v6\")\n(define response (call HTTP.get url))\n(call print \"[SUCCESS] GitHub API 요청 완료\")\n(call print \"Repository 정보를 수집했습니다.\")\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"HTTP 요청 및 데이터 처리 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"url\",\n      \"value_type\": \"string\",\n      \"value\": \"https://api.github.com/repos/freelang-community/freelang-v6\"\n    },\n    {\n      \"type\": \"call\",\n... (33개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.303Z\n- **처리 시간**: 0ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

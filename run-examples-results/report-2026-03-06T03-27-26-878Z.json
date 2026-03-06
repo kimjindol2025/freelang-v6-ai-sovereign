@@ -1,0 +1,120 @@
+{
+  "timestamp": "2026-03-06T03:27:26.879Z",
+  "totalTime": 28,
+  "successCount": 14,
+  "failureCount": 0,
+  "results": [
+    {
+      "name": "api-response-processing",
+      "success": true,
+      "executionTime": 3,
+      "memoryUsage": 0,
+      "instructionCount": 10,
+      "outputLength": 4
+    },
+    {
+      "name": "array-example",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.01552581787109375,
+      "instructionCount": 2,
+      "outputLength": 5
+    },
+    {
+      "name": "conditional-workflow",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.02738189697265625,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "csv-parsing",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.439300537109375,
+      "instructionCount": 14,
+      "outputLength": 4
+    },
+    {
+      "name": "data-aggregation",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00982666015625,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "data-filtering",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.01988983154296875,
+      "instructionCount": 3,
+      "outputLength": 1
+    },
+    {
+      "name": "data-mapping",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.4219818115234375,
+      "instructionCount": 3,
+      "outputLength": 1
+    },
+    {
+      "name": "http-example",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00933074951171875,
+      "instructionCount": 4,
+      "outputLength": 3
+    },
+    {
+      "name": "loop-with-condition",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.024566650390625,
+      "instructionCount": 6,
+      "outputLength": 4
+    },
+    {
+      "name": "markdown-example",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.017303466796875,
+      "instructionCount": 6,
+      "outputLength": 6
+    },
+    {
+      "name": "nested-operations",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.06975555419921875,
+      "instructionCount": 6,
+      "outputLength": 3
+    },
+    {
+      "name": "simple",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00278472900390625,
+      "instructionCount": 2,
+      "outputLength": 1
+    },
+    {
+      "name": "string-split",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.01673126220703125,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "string-transformation",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0,
+      "instructionCount": 4,
+      "outputLength": 4
+    }
+  ]
+}

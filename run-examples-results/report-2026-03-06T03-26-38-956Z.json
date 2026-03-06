@@ -1,0 +1,118 @@
+{
+  "timestamp": "2026-03-06T03:26:38.957Z",
+  "totalTime": 29,
+  "successCount": 13,
+  "failureCount": 1,
+  "results": [
+    {
+      "name": "api-response-processing",
+      "success": true,
+      "executionTime": 3,
+      "memoryUsage": 0,
+      "instructionCount": 10,
+      "outputLength": 4
+    },
+    {
+      "name": "array-example",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.01552581787109375,
+      "instructionCount": 2,
+      "outputLength": 5
+    },
+    {
+      "name": "conditional-workflow",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.02736663818359375,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "csv-parsing",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.445770263671875,
+      "instructionCount": 14,
+      "outputLength": 4
+    },
+    {
+      "name": "data-aggregation",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00982666015625,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "data-filtering",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.01988983154296875,
+      "instructionCount": 3,
+      "outputLength": 1
+    },
+    {
+      "name": "data-mapping",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.42212677001953125,
+      "instructionCount": 3,
+      "outputLength": 1
+    },
+    {
+      "name": "http-example",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00933074951171875,
+      "instructionCount": 4,
+      "outputLength": 3
+    },
+    {
+      "name": "loop-with-condition",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.024566650390625,
+      "instructionCount": 6,
+      "outputLength": 4
+    },
+    {
+      "name": "markdown-example",
+      "success": false,
+      "error": "Compilation failed: Cannot read properties of undefined (reading 'map')",
+      "outputLength": 0
+    },
+    {
+      "name": "nested-operations",
+      "success": true,
+      "executionTime": 1,
+      "memoryUsage": 0.06975555419921875,
+      "instructionCount": 6,
+      "outputLength": 3
+    },
+    {
+      "name": "simple",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.00278472900390625,
+      "instructionCount": 2,
+      "outputLength": 1
+    },
+    {
+      "name": "string-split",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.01673126220703125,
+      "instructionCount": 4,
+      "outputLength": 1
+    },
+    {
+      "name": "string-transformation",
+      "success": true,
+      "executionTime": 0,
+      "memoryUsage": 0.0270538330078125,
+      "instructionCount": 4,
+      "outputLength": 4
+    }
+  ]
+}

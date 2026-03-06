@@ -1,0 +1,116 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.293Z",
+    "metadata": {
+      "filename": "array-example.json",
+      "filePath": "examples/array-example.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "배열 처리 및 함수형 프로그래밍 예제"
+          },
+          {
+            "type": "var",
+            "name": "numbers",
+            "value_type": "Array<i32>",
+            "value": {
+              "type": "array",
+              "elements": [
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 1
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 2
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 3
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 4
+                },
+                {
+                  "type": "literal",
+                  "value_type": "i32",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          {
+            "type": "comment",
+            "text": "배열의 각 요소에 대해 반복"
+          },
+          {
+            "type": "loop",
+            "iterator": "num",
+            "range": {
+              "type": "ref",
+              "name": "numbers"
+            },
+            "body": [
+              {
+                "type": "call",
+                "function": "print",
+                "args": [
+                  {
+                    "type": "ref",
+                    "name": "num"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 처리 및 함수형 프로그래밍 예제\n(define numbers (array 1 2 3 4 5))\n; 배열의 각 요소에 대해 반복\n(for num numbers (do (call print num)))",
+      "errors": [],
+      "vtCodeLength": 172
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션"
+      ],
+      "executionTime": 0,
+      "memoryUsage": 0.00292205810546875,
+      "instructionCount": 12
+    },
+    "performance": {
+      "totalProcessingTime": 0,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: array-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 172 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 처리 및 함수형 프로그래밍 예제\n(define numbers (array 1 2 3 4 5))\n; 배열의 각 요소에 대해 반복\n(for num numbers (do (call print num)))\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.00MB\n- **명령어 수**: 12\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 처리 및 함수형 프로그래밍 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (53개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 12 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: array-example.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: array-example.json",
+      "파일명": "array-example.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "0.00",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: array-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 12 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 배열 처리 및 함수형 프로그래밍 예제\n(define numbers (array 1 2 3 4 5))\n; 배열의 각 요소에 대해 반복\n(for num numbers (do (call print num)))\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 처리 및 함수형 프로그래밍 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n... (53개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.293Z\n- **처리 시간**: 0ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

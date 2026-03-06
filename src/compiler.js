@@ -29,7 +29,7 @@ class CLAUDELangCompiler {
     this.registerFunction("Array.push", ["array: Array", "value: any"], "Array");
     this.registerFunction("Array.pop", ["array: Array"], "any");
     this.registerFunction("Array.join", ["array: Array", "delimiter: string"], "string");
-    this.registerFunction("Array.slice", ["array: Array", "start: i32", "end: i32"], "Array");
+    this.registerFunction("Array.slice", ["array: Array", "start: i32", "end: i32"], "Array", 2);
     this.registerFunction("Array.indexOf", ["array: Array", "value: any"], "i32");
     this.registerFunction("Array.includes", ["array: Array", "value: any"], "bool");
     this.registerFunction("Array.reverse", ["array: Array"], "Array");
@@ -77,10 +77,11 @@ class CLAUDELangCompiler {
     this.registerFunction("IO.print_object", ["obj: Object"], "null");
   }
 
-  registerFunction(name, params, returnType) {
+  registerFunction(name, params, returnType, minParams = null) {
     this.vtFunctions.set(name, {
       params: params,
       returnType: returnType,
+      minParams: minParams !== null ? minParams : params.length
     });
   }
 
@@ -213,9 +214,12 @@ class CLAUDELangCompiler {
 
         // 함수 시그니처 검사
         const signature = this.vtFunctions.get(instr.function);
-        if (instr.args.length !== signature.params.length) {
+        const minParams = signature.minParams || signature.params.length;
+        const maxParams = signature.params.length;
+
+        if (instr.args.length < minParams || instr.args.length > maxParams) {
           throw new Error(
-            `${instr.function} expects ${signature.params.length} arguments, got ${instr.args.length}`
+            `${instr.function} expects ${minParams}-${maxParams} arguments, got ${instr.args.length}`
           );
         }
 
@@ -439,6 +443,10 @@ class CLAUDELangCompiler {
         const compRight = this.generateExpression(expr.right);
         return `(${expr.operator} ${compLeft} ${compRight})`;
 
+      case "call":
+        const callArgs = expr.args ? expr.args.map((arg) => this.generateExpression(arg)).join(" ") : "";
+        return `(call ${expr.function}${callArgs ? ' ' + callArgs : ''})`;
+
       case "array":
         if (!expr.elements || expr.elements.length === 0) {
           return "(array)";
@@ -455,7 +463,7 @@ class CLAUDELangCompiler {
         return `(object ${props})`;
 
       case "lambda":
-        const params = expr.params ? expr.params.map((p) => p.name).join(" ") : "";
+        const params = expr.params ? expr.params.map((p) => typeof p === 'string' ? p : p.name).join(" ") : "";
         const bodyExpr = expr.body
           .map((b) => {
             // Check if it's an instruction or an expression

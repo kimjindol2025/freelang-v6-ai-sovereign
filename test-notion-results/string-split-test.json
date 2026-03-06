@@ -1,0 +1,149 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.309Z",
+    "metadata": {
+      "filename": "string-split.json",
+      "filePath": "examples/string-split.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "문자열 분할 예제 - 쉼표로 구분된 값 파싱"
+          },
+          {
+            "type": "var",
+            "name": "csv_line",
+            "value_type": "string",
+            "value": "apple,banana,cherry,date"
+          },
+          {
+            "type": "comment",
+            "text": "구분자로 문자열 분할"
+          },
+          {
+            "type": "call",
+            "function": "String.split",
+            "args": [
+              {
+                "type": "ref",
+                "name": "csv_line"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": ","
+              }
+            ],
+            "assign_to": "items"
+          },
+          {
+            "type": "comment",
+            "text": "각 항목의 공백 제거 (trim)"
+          },
+          {
+            "type": "call",
+            "function": "Array.map",
+            "args": [
+              {
+                "type": "ref",
+                "name": "items"
+              },
+              {
+                "type": "lambda",
+                "params": [
+                  "item"
+                ],
+                "body": [
+                  {
+                    "type": "call",
+                    "function": "String.trim",
+                    "args": [
+                      {
+                        "type": "ref",
+                        "name": "item"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "assign_to": "trimmed_items"
+          },
+          {
+            "type": "comment",
+            "text": "결과 출력"
+          },
+          {
+            "type": "call",
+            "function": "IO.print_array",
+            "args": [
+              {
+                "type": "ref",
+                "name": "trimmed_items"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 문자열 분할 예제 - 쉼표로 구분된 값 파싱\n(define csv_line \"apple,banana,cherry,date\")\n; 구분자로 문자열 분할\n(define items (call String.split csv_line \",\"))\n; 각 항목의 공백 제거 (trim)\n(define trimmed_items (call Array.map items (fn (item) (call String.trim item))))\n; 결과 출력\n(call IO.print_array trimmed_items)",
+      "errors": [],
+      "vtCodeLength": 337
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[SUCCESS] GitHub API 요청 완료",
+        "Repository 정보를 수집했습니다.",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "(call Markdown.build doc)",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "Hello, CLAUDELang!",
+        "[IO.print_array] 함수 호출 시뮬레이션"
+      ],
+      "executionTime": 0,
+      "memoryUsage": 0.004180908203125,
+      "instructionCount": 68
+    },
+    "performance": {
+      "totalProcessingTime": 0,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: string-split.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 337 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 문자열 분할 예제 - 쉼표로 구분된 값 파싱\n(define csv_line \"apple,banana,cherry,date\")\n; 구분자로 문자열 분할\n(define items (call String.split csv_line \",\"))\n; 각 항목의 공백 제거 (trim)\n(define trimmed_items (call Array.map items (fn (item) (call String.trim item))))\n; 결과 출력\n... (1개 줄 생략)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.00MB\n- **명령어 수**: 68\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\nHello, CLAUDELang!\n[IO.print_array] 함수 호출 시뮬레이션\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"문자열 분할 예제 - 쉼표로 구분된 값 파싱\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"csv_line\",\n      \"value_type\": \"string\",\n      \"value\": \"apple,banana,cherry,date\"\n    },\n    {\n      \"type\": \"comment\",\n... (67개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 68 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: string-split.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: string-split.json",
+      "파일명": "string-split.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "0.00",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: string-split.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.00MB |\n| 명령어 수 | 68 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\nHello, CLAUDELang!\n[IO.print_array] 함수 호출 시뮬레이션\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; 문자열 분할 예제 - 쉼표로 구분된 값 파싱\n(define csv_line \"apple,banana,cherry,date\")\n; 구분자로 문자열 분할\n(define items (call String.split csv_line \",\"))\n; 각 항목의 공백 제거 (trim)\n(define trimmed_items (call Array.map items (fn (item) (call String.trim item))))\n; 결과 출력\n(call IO.print_array trimmed_items)\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"문자열 분할 예제 - 쉼표로 구분된 값 파싱\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"csv_line\",\n      \"value_type\": \"string\",\n      \"value\": \"apple,banana,cherry,date\"\n    },\n    {\n      \"type\": \"comment\",\n... (67개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.309Z\n- **처리 시간**: 0ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}

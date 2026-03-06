@@ -1,0 +1,159 @@
+{
+  "success": true,
+  "report": {
+    "timestamp": "2026-03-06T03:29:21.305Z",
+    "metadata": {
+      "filename": "markdown-example.json",
+      "filePath": "examples/markdown-example.json",
+      "code": {
+        "version": "6.0",
+        "instructions": [
+          {
+            "type": "comment",
+            "text": "Markdown 문서 생성 예제"
+          },
+          {
+            "type": "var",
+            "name": "doc",
+            "value_type": "Object",
+            "value": {
+              "type": "call",
+              "function": "Markdown.create"
+            }
+          },
+          {
+            "type": "call",
+            "function": "Markdown.heading",
+            "args": [
+              {
+                "type": "ref",
+                "name": "doc"
+              },
+              {
+                "type": "literal",
+                "value_type": "i32",
+                "value": 1
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "CLAUDELang 자동 포스팅"
+              }
+            ],
+            "assign_to": "doc"
+          },
+          {
+            "type": "call",
+            "function": "Markdown.paragraph",
+            "args": [
+              {
+                "type": "ref",
+                "name": "doc"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다."
+              }
+            ],
+            "assign_to": "doc"
+          },
+          {
+            "type": "call",
+            "function": "Markdown.code",
+            "args": [
+              {
+                "type": "ref",
+                "name": "doc"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "json"
+              },
+              {
+                "type": "literal",
+                "value_type": "string",
+                "value": "{\"version\": \"6.0\"}"
+              }
+            ],
+            "assign_to": "doc"
+          },
+          {
+            "type": "call",
+            "function": "Markdown.build",
+            "args": [
+              {
+                "type": "ref",
+                "name": "doc"
+              }
+            ],
+            "assign_to": "result"
+          },
+          {
+            "type": "call",
+            "function": "print",
+            "args": [
+              {
+                "type": "ref",
+                "name": "result"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "compilation": {
+      "success": true,
+      "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; Markdown 문서 생성 예제\n(define doc (call Markdown.create))\n(define doc (call Markdown.heading doc 1 \"CLAUDELang 자동 포스팅\"))\n(define doc (call Markdown.paragraph doc \"이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다.\"))\n(define doc (call Markdown.code doc \"json\" \"{\"version\": \"6.0\"}\"))\n(define result (call Markdown.build doc))\n(call print result)",
+      "errors": [],
+      "vtCodeLength": 382
+    },
+    "execution": {
+      "success": true,
+      "output": [
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[SUCCESS] GitHub API 요청 완료",
+        "Repository 정보를 수집했습니다.",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "[IO.print_array] 함수 호출 시뮬레이션",
+        "[IO.print] 함수 호출 시뮬레이션",
+        "(call Markdown.build doc)"
+      ],
+      "executionTime": 0,
+      "memoryUsage": 0.5738067626953125,
+      "instructionCount": 56
+    },
+    "performance": {
+      "totalProcessingTime": 0,
+      "compilationPhase": "included in total",
+      "executionPhase": 0
+    },
+    "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: markdown-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 382 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; Markdown 문서 생성 예제\n(define doc (call Markdown.create))\n(define doc (call Markdown.heading doc 1 \"CLAUDELang 자동 포스팅\"))\n(define doc (call Markdown.paragraph doc \"이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다.\"))\n(define doc (call Markdown.code doc \"json\" \"{\"version\": \"6.0\"}\"))\n(define result (call Markdown.build doc))\n(call print result)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.57MB\n- **명령어 수**: 56\n\n### 출력 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"Markdown 문서 생성 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"doc\",\n      \"value_type\": \"Object\",\n      \"value\": {\n        \"type\": \"call\",\n        \"function\": \"Markdown.create\"\n      }\n... (82개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.57MB |\n| 명령어 수 | 56 |\n"
+  },
+  "notionPageUrl": null,
+  "pageProperties": {
+    "title": "CLAUDELang 예제 실행: markdown-example.json",
+    "properties": {
+      "title": "CLAUDELang 예제 실행: markdown-example.json",
+      "파일명": "markdown-example.json",
+      "실행시간": "2026. 3. 6. PM 12:29:21",
+      "컴파일상태": "성공",
+      "실행상태": "성공",
+      "실행시간ms": 0,
+      "메모리사용mb": "0.57",
+      "태그": "#CLAUDELang, #Test, #v6.0"
+    }
+  },
+  "pageContent": "# CLAUDELang v6.0 실행 결과\n\n## 요약\n**파일**: markdown-example.json\n**실행 시간**: 2026. 3. 6. PM 12:29:21\n**상태**: ✅ 성공\n\n## 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 | ✅ 성공 |\n| 실행 | ✅ 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.57MB |\n| 명령어 수 | 56 |\n\n## 실행 결과\n```\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n[IO.print] 함수 호출 시뮬레이션\n[IO.print_array] 함수 호출 시뮬레이션\n[IO.print] 함수 호출 시뮬레이션\n(call Markdown.build doc)\n```\n\n## VT 바이트코드\n```lisp\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; Markdown 문서 생성 예제\n(define doc (call Markdown.create))\n(define doc (call Markdown.heading doc 1 \"CLAUDELang 자동 포스팅\"))\n(define doc (call Markdown.paragraph doc \"이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다.\"))\n(define doc (call Markdown.code doc \"json\" \"{\"version\": \"6.0\"}\"))\n(define result (call Markdown.build doc))\n(call print result)\n```\n\n## 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"Markdown 문서 생성 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"doc\",\n      \"value_type\": \"Object\",\n      \"value\": {\n        \"type\": \"call\",\n        \"function\": \"Markdown.create\"\n      }\n... (82개 줄 생략)\n```\n\n## 메타데이터\n- **타임스탬프**: 2026-03-06T03:29:21.305Z\n- **처리 시간**: 0ms\n- **태그**: #CLAUDELang, #Test, #v6.0"
+}
