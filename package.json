@@ -1,64 +1,50 @@
 {
-  "name": "claude-automation",
+  "name": "claudelang",
   "version": "1.0.0",
-  "description": "Claude Code 자동 동기화 파이프라인 - 프로젝트 자동 생성 및 Gogs 동기화 시스템",
-  "main": "create-project.sh",
-  "repository": "https://gogs.dclub.kr/kim/claude-automation.git",
-  "author": "kim",
-  "license": "MIT",
+  "description": "CLAUDELang - AI-optimized programming language designed for Claude, expressing programs as pure JSON with functional programming paradigms",
+  "main": "src/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.js"
+    },
+    "./compiler": "./src/compiler.js",
+    "./runtime": "./src/vt-runtime-bridge.js"
+  },
+  "scripts": {
+    "test": "node test/test-basic.js && node test/vt-runtime.test.js",
+    "test:examples": "node run-examples.js",
+    "test:patterns": "node test-claude-patterns.js",
+    "test:all": "node test/test-basic.js && node test/vt-runtime.test.js && node run-examples.js && node test-claude-patterns.js"
+  },
   "keywords": [
     "claude",
-    "automation",
-    "gogs",
-    "git",
-    "project-management",
-    "devops",
-    "deployment"
+    "ai",
+    "language",
+    "json",
+    "compiler",
+    "functional-programming",
+    "data-processing",
+    "vt-runtime"
   ],
-  "category": "DevOps",
-  "tags": [
-    "claude-code",
-    "gogs",
-    "git-automation",
-    "project-creation",
-    "continuous-sync"
-  ],
-  "scripts": {
-    "install": "bash install.sh",
-    "test": "bash test.sh",
-    "monitor": "bash monitor-sync.sh"
+  "author": "Claude (Anthropic)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/claudelang.git"
   },
-  "bin": {
-    "claude-automation": "./create-project.sh",
-    "claude-monitor": "./monitor-sync.sh"
+  "bugs": {
+    "url": "https://github.com/anthropics/claudelang/issues"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "homepage": "https://github.com/anthropics/claudelang#readme",
   "engines": {
-    "bash": ">=4.0"
+    "node": ">=18.0.0"
   },
-  "installPath": "/home/kimjin/kim_modules/claude-automation",
-  "hooks": {
-    "post-install": "bash post-install.sh"
-  },
-  "metadata": {
-    "documentation": "https://gogs.dclub.kr/kim/claude-automation",
-    "support": "kim@dclub.kr",
-    "maintainer": "kim",
-    "stability": "stable",
-    "tested": "2026-03-06"
-  },
-  "features": [
-    "Automatic project creation (5-step pipeline)",
-    "Auto-sync to Gogs with post-commit hooks",
-    "Project monitoring dashboard",
-    "Multi-type project support (web, api, cli, library, service, daemon)",
-    "Zero-configuration setup"
-  ],
-  "requirements": [
-    "git",
-    "bash 4.0+",
-    "curl",
-    "jq (optional, for API responses)"
+  "files": [
+    "src/",
+    "examples/",
+    "README.md",
+    "LICENSE"
   ]
 }
