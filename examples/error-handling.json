@@ -1,0 +1,72 @@
+{
+  "version": "6.0",
+  "description": "에러 핸들링: try/catch/finally",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "try/catch 테스트"
+    },
+    {
+      "type": "try",
+      "body": [
+        {
+          "type": "var",
+          "name": "x",
+          "value_type": "i32",
+          "value": 10
+        },
+        {
+          "type": "call",
+          "function": "println",
+          "args": [{"type": "literal", "value_type": "string", "value": "try 블록 실행"}]
+        }
+      ],
+      "catch": {
+        "error_var": "err",
+        "body": [
+          {
+            "type": "call",
+            "function": "println",
+            "args": [{"type": "ref", "name": "err"}]
+          }
+        ]
+      },
+      "finally": [
+        {
+          "type": "call",
+          "function": "println",
+          "args": [{"type": "literal", "value_type": "string", "value": "finally 블록 실행"}]
+        }
+      ]
+    },
+    {
+      "type": "comment",
+      "text": "throw 테스트"
+    },
+    {
+      "type": "try",
+      "body": [
+        {
+          "type": "throw",
+          "error_type": "ValidationError",
+          "message": {"type": "literal", "value_type": "string", "value": "값이 유효하지 않습니다"}
+        }
+      ],
+      "catch": {
+        "error_var": "error",
+        "body": [
+          {
+            "type": "call",
+            "function": "println",
+            "args": [{"type": "literal", "value_type": "string", "value": "에러 캡처: "}]
+          },
+          {
+            "type": "call",
+            "function": "println",
+            "args": [{"type": "ref", "name": "error"}]
+          }
+        ]
+      }
+    }
+  ]
+}

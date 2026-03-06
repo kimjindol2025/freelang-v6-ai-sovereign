@@ -1,0 +1,26 @@
+{
+  "version": "6.0",
+  "description": "간단한 클래스 사용",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Person 클래스 인스턴스 생성"
+    },
+    {
+      "type": "new",
+      "class_name": "Person",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "Alice"},
+        {"type": "literal", "value_type": "i32", "value": 30}
+      ],
+      "assign_to": "person"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "Created Person object"}
+      ]
+    }
+  ]
+}

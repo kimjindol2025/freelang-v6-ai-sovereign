@@ -1,0 +1,96 @@
+{
+  "version": "6.0",
+  "description": "제너릭 타입: Set<T> 사용",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Set 생성 - 중복 없는 컬렉션"
+    },
+    {
+      "type": "call",
+      "function": "Set.create",
+      "args": [],
+      "assign_to": "uniqueNumbers"
+    },
+    {
+      "type": "comment",
+      "text": "Set에 값 추가"
+    },
+    {
+      "type": "call",
+      "function": "Set.add",
+      "args": [
+        {"type": "ref", "name": "uniqueNumbers"},
+        {"type": "literal", "value_type": "i32", "value": 1}
+      ],
+      "assign_to": "uniqueNumbers"
+    },
+    {
+      "type": "call",
+      "function": "Set.add",
+      "args": [
+        {"type": "ref", "name": "uniqueNumbers"},
+        {"type": "literal", "value_type": "i32", "value": 2}
+      ],
+      "assign_to": "uniqueNumbers"
+    },
+    {
+      "type": "call",
+      "function": "Set.add",
+      "args": [
+        {"type": "ref", "name": "uniqueNumbers"},
+        {"type": "literal", "value_type": "i32", "value": 3}
+      ],
+      "assign_to": "uniqueNumbers"
+    },
+    {
+      "type": "call",
+      "function": "Set.add",
+      "args": [
+        {"type": "ref", "name": "uniqueNumbers"},
+        {"type": "literal", "value_type": "i32", "value": 2}
+      ],
+      "assign_to": "uniqueNumbers"
+    },
+    {
+      "type": "comment",
+      "text": "Set 크기 (중복 제거됨)"
+    },
+    {
+      "type": "call",
+      "function": "Set.size",
+      "args": [{"type": "ref", "name": "uniqueNumbers"}],
+      "assign_to": "setSize"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "literal", "value_type": "string", "value": "Set size (after adding 1,2,3,2): "}]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "ref", "name": "setSize"}]
+    },
+    {
+      "type": "comment",
+      "text": "Set을 배열로 변환"
+    },
+    {
+      "type": "call",
+      "function": "Set.toArray",
+      "args": [{"type": "ref", "name": "uniqueNumbers"}],
+      "assign_to": "arrayFromSet"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "literal", "value_type": "string", "value": "Set as array: "}]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "ref", "name": "arrayFromSet"}]
+    }
+  ]
+}

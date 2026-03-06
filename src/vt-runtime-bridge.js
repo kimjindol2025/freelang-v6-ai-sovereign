@@ -192,15 +192,166 @@ class VTParser {
  * VT AST를 평가하는 평가기
  */
 class VTEvaluator {
-  constructor() {
-    this.memory = new Map();
+  constructor(debugMode = false) {
+    // 스코프 체인 시스템 (배열의 0번 인덱스가 전역 스코프)
+    this.scopes = [new Map()];
     this.functions = new Map();
+    this.debugMode = debugMode;
+    this.executionTrace = [];
+    this.callStack = [];
     this.initializeBuiltins();
+  }
+
+  /**
+   * 변수 조회 (현재 스코프에서 전역 스코프로 탐색)
+   */
+  lookupVar(name) {
+    // 스택 최상단에서 최하단(전역)으로 탐색
+    for (let i = this.scopes.length - 1; i >= 0; i--) {
+      if (this.scopes[i].has(name)) {
+        return this.scopes[i].get(name);
+      }
+    }
+    throw new Error(`Undefined variable: ${name}`);
+  }
+
+  /**
+   * 변수 설정 (가장 가까운 스코프에 설정)
+   */
+  setVar(name, value) {
+    this.scopes[this.scopes.length - 1].set(name, value);
+  }
+
+  /**
+   * 변수 존재 확인
+   */
+  hasVar(name) {
+    for (let i = this.scopes.length - 1; i >= 0; i--) {
+      if (this.scopes[i].has(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * 새 스코프 푸시
+   */
+  pushScope() {
+    this.scopes.push(new Map());
+  }
+
+  /**
+   * 현재 스코프 팝
+   */
+  popScope() {
+    if (this.scopes.length > 1) {
+      this.scopes.pop();
+    }
+  }
+
+  /**
+   * 전역 메모리 접근 (호환성)
+   */
+  get memory() {
+    return this.scopes[0];
   }
 
   /**
    * 내장 함수 초기화
    */
+  /**
+   * 클래스 생성
+   */
+  evaluateClass(args) {
+    if (args.length < 2) {
+      throw new Error('class requires name and body');
+    }
+
+    const nameExpr = args[0];
+    const bodyExprs = args.slice(1);
+
+    if (nameExpr.type !== 'symbol') {
+      throw new Error('class: first argument must be a symbol');
+    }
+
+    const className = nameExpr.value;
+    const methods = {};
+
+    // 메서드 수집
+    bodyExprs.forEach(expr => {
+      if (expr.type === 'list' && expr.elements && expr.elements[0]) {
+        const first = expr.elements[0];
+        if (first.type === 'symbol' && first.value === 'method') {
+          const methodName = expr.elements[1]?.value;
+          if (methodName) {
+            methods[methodName] = expr;
+          }
+        }
+      }
+    });
+
+    // 클래스 정의 (생성자 함수)
+    const classConstructor = (props = {}) => {
+      return {
+        __className: className,
+        __methods: methods,
+        __evaluator: this,
+        ...props
+      };
+    };
+
+    this.functions.set(className, classConstructor);
+    this.setVar(className, `[Class: ${className}]`);
+
+    return classConstructor;
+  }
+
+  /**
+   * 메서드 호출
+   */
+  evaluateMethodCall(args) {
+    if (args.length < 2) {
+      throw new Error('method call requires object and method');
+    }
+
+    const objExpr = args[0];
+    const methodName = args[1]?.value;
+    const methodArgs = args.slice(2);
+
+    const obj = this.evaluateExpression(objExpr);
+
+    if (!obj || typeof obj !== 'object' || !obj.__className) {
+      throw new Error('method: first argument must be an object instance');
+    }
+
+    if (!methodName) {
+      throw new Error('method: second argument must be a symbol');
+    }
+
+    // 속성 접근
+    if (methodName.startsWith('get_')) {
+      const propName = methodName.slice(4);
+      return obj[propName];
+    }
+
+    // 속성 설정
+    if (methodName.startsWith('set_')) {
+      const propName = methodName.slice(4);
+      const value = this.evaluateExpression(methodArgs[0]);
+      obj[propName] = value;
+      return obj;
+    }
+
+    // 메서드 호출
+    if (obj.__methods && obj.__methods[methodName]) {
+      // 메서드 실행 (간단히 구현)
+      return null;
+    }
+
+    throw new Error(`Unknown method: ${methodName}`);
+  }
+
   initializeBuiltins() {
     // I/O
     this.functions.set('print', (value) => {
@@ -425,6 +576,114 @@ class VTEvaluator {
       if (Array.isArray(arr)) return arr[idx];
       return null;
     });
+
+    // Map 함수들
+    this.functions.set('Map.create', () => {
+      return new Map();
+    });
+
+    this.functions.set('Map.get', (map, key) => {
+      if (map instanceof Map) {
+        return map.get(key) ?? null;
+      }
+      return null;
+    });
+
+    this.functions.set('Map.set', (map, key, value) => {
+      if (map instanceof Map) {
+        map.set(key, value);
+      }
+      return map;
+    });
+
+    this.functions.set('Map.has', (map, key) => {
+      if (map instanceof Map) {
+        return map.has(key);
+      }
+      return false;
+    });
+
+    this.functions.set('Map.delete', (map, key) => {
+      if (map instanceof Map) {
+        return map.delete(key);
+      }
+      return false;
+    });
+
+    this.functions.set('Map.keys', (map) => {
+      if (map instanceof Map) {
+        return Array.from(map.keys());
+      }
+      return [];
+    });
+
+    this.functions.set('Map.values', (map) => {
+      if (map instanceof Map) {
+        return Array.from(map.values());
+      }
+      return [];
+    });
+
+    this.functions.set('Map.size', (map) => {
+      if (map instanceof Map) {
+        return map.size;
+      }
+      return 0;
+    });
+
+    this.functions.set('Map.clear', (map) => {
+      if (map instanceof Map) {
+        map.clear();
+      }
+      return null;
+    });
+
+    // Set 함수들
+    this.functions.set('Set.create', () => {
+      return new Set();
+    });
+
+    this.functions.set('Set.add', (set, value) => {
+      if (set instanceof Set) {
+        set.add(value);
+      }
+      return set;
+    });
+
+    this.functions.set('Set.has', (set, value) => {
+      if (set instanceof Set) {
+        return set.has(value);
+      }
+      return false;
+    });
+
+    this.functions.set('Set.delete', (set, value) => {
+      if (set instanceof Set) {
+        return set.delete(value);
+      }
+      return false;
+    });
+
+    this.functions.set('Set.size', (set) => {
+      if (set instanceof Set) {
+        return set.size;
+      }
+      return 0;
+    });
+
+    this.functions.set('Set.clear', (set) => {
+      if (set instanceof Set) {
+        set.clear();
+      }
+      return null;
+    });
+
+    this.functions.set('Set.toArray', (set) => {
+      if (set instanceof Set) {
+        return Array.from(set);
+      }
+      return [];
+    });
   }
 
   /**
@@ -452,11 +711,8 @@ class VTEvaluator {
         return expr.value;
 
       case 'symbol':
-        // 변수 참조
-        if (this.memory.has(expr.value)) {
-          return this.memory.get(expr.value);
-        }
-        throw new Error(`Undefined variable: ${expr.value}`);
+        // 변수 참조 (스코프 체인 탐색)
+        return this.lookupVar(expr.value);
 
       case 'list':
         return this.evaluateList(expr);
@@ -502,6 +758,22 @@ class VTEvaluator {
         return this.evaluateLambda(expr.elements.slice(1));
       }
 
+      if (opName === 'defn') {
+        return this.evaluateDefn(expr.elements.slice(1));
+      }
+
+      if (opName === 'return') {
+        return this.evaluateReturn(expr.elements.slice(1));
+      }
+
+      if (opName === 'try') {
+        return this.evaluateTryCatch(expr.elements.slice(1));
+      }
+
+      if (opName === 'throw') {
+        return this.evaluateThrow(expr.elements.slice(1));
+      }
+
       // 함수 호출 (첫 요소가 함수명)
       if (this.functions.has(opName)) {
         const args = expr.elements.slice(1).map(e => this.evaluateExpression(e));
@@ -532,7 +804,7 @@ class VTEvaluator {
     }
 
     const value = this.evaluateExpression(valueExpr);
-    this.memory.set(nameExpr.value, value);
+    this.setVar(nameExpr.value, value);
     return value;
   }
 
@@ -576,7 +848,7 @@ class VTEvaluator {
 
     if (Array.isArray(range)) {
       for (const item of range) {
-        this.memory.set(iteratorExpr.value, item);
+        this.setVar(iteratorExpr.value, item);
         result = this.evaluateExpression(bodyExpr);
       }
     }
@@ -597,6 +869,55 @@ class VTEvaluator {
     const funcName = funcExpr.value;
     if (!this.functions.has(funcName)) {
       throw new Error(`Unknown function: ${funcName}`);
+    }
+
+    // 디버그 모드: 함수 호출 추적
+    if (this.debugMode) {
+      const callArgs = args.slice(1).map(e => this.evaluateExpression(e));
+      this.callStack.push(funcName);
+      const depth = this.callStack.length - 1;
+      const indent = '  '.repeat(depth);
+      const argsStr = callArgs.map(arg => {
+        if (typeof arg === 'string') return `"${arg}"`;
+        if (typeof arg === 'object') return `[Object]`;
+        return String(arg);
+      }).join(', ');
+      this.executionTrace.push({
+        type: 'call',
+        function: funcName,
+        args: callArgs,
+        depth: depth,
+        timestamp: Date.now()
+      });
+      console.log(`${indent}→ ${funcName}(${argsStr})`);
+
+      try {
+        const fn = this.functions.get(funcName);
+        const result = fn(...callArgs);
+
+        this.executionTrace.push({
+          type: 'return',
+          function: funcName,
+          result: result,
+          depth: depth,
+          timestamp: Date.now()
+        });
+        console.log(`${indent}← ${funcName} = ${typeof result === 'string' ? `"${result}"` : result}`);
+
+        this.callStack.pop();
+        return result;
+      } catch (e) {
+        this.executionTrace.push({
+          type: 'error',
+          function: funcName,
+          error: e.message,
+          depth: depth,
+          timestamp: Date.now()
+        });
+        console.log(`${indent}✗ ${funcName} threw: ${e.message}`);
+        this.callStack.pop();
+        throw e;
+      }
     }
 
     const fn = this.functions.get(funcName);
@@ -621,17 +942,192 @@ class VTEvaluator {
   }
 
   /**
-   * 메모리 상태 조회
+   * 메모리 상태 조회 (전역 스코프만 반환)
    */
   getMemory() {
-    return Object.fromEntries(this.memory);
+    return Object.fromEntries(this.scopes[0] || new Map());
   }
 
   /**
    * 메모리 초기화
    */
   clearMemory() {
-    this.memory.clear();
+    if (this.scopes[0]) {
+      this.scopes[0].clear();
+    }
+  }
+
+  /**
+   * 함수 정의: (defn name (params...) body...)
+   */
+  evaluateDefn(args) {
+    if (args.length < 2) {
+      throw new Error('defn requires at least 2 arguments');
+    }
+
+    const nameExpr = args[0];
+    const paramsExpr = args[1];
+
+    if (nameExpr.type !== 'symbol') {
+      throw new Error('defn: first argument must be a symbol (function name)');
+    }
+
+    const funcName = nameExpr.value;
+    const paramNames = [];
+
+    if (paramsExpr.type === 'list' && paramsExpr.elements) {
+      paramsExpr.elements.forEach(elem => {
+        if (elem.type === 'symbol') {
+          paramNames.push(elem.value);
+        }
+      });
+    }
+
+    const bodyExprs = args.slice(2);
+
+    // 클로저로 함수 저장
+    const fn = (...callArgs) => {
+      // 새 스코프 푸시
+      this.pushScope();
+
+      // 파라미터 바인딩
+      for (let i = 0; i < paramNames.length; i++) {
+        this.setVar(paramNames[i], callArgs[i]);
+      }
+
+      try {
+        // 함수 바디 실행
+        let result = null;
+        for (const expr of bodyExprs) {
+          result = this.evaluateExpression(expr);
+          // return이 발생하면 즉시 반환
+          if (this.returnValue !== undefined) {
+            result = this.returnValue;
+            this.returnValue = undefined;
+            break;
+          }
+        }
+        return result;
+      } finally {
+        // 스코프 팝
+        this.popScope();
+      }
+    };
+
+    // 함수 등록
+    this.functions.set(funcName, fn);
+    this.setVar(funcName, `[Function: ${funcName}]`);
+
+    return fn;
+  }
+
+  /**
+   * 반환: (return value)
+   */
+  evaluateReturn(args) {
+    if (args.length < 1) {
+      this.returnValue = null;
+    } else {
+      this.returnValue = this.evaluateExpression(args[0]);
+    }
+    // throw를 사용하여 함수 실행을 중단하지 않고 반환값만 설정
+    return this.returnValue;
+  }
+
+  /**
+   * try/catch/finally: (try (do body...) (catch error-var (do catch-body...)) (finally (do finally-body...)))
+   */
+  evaluateTryCatch(args) {
+    if (args.length < 1) {
+      throw new Error('try requires at least 1 argument');
+    }
+
+    let result = null;
+    let caught = false;
+
+    try {
+      // try 블록 실행
+      result = this.evaluateExpression(args[0]);
+    } catch (e) {
+      caught = true;
+      // catch 블록 찾기
+      for (let i = 1; i < args.length; i++) {
+        const clause = args[i];
+        if (clause.type === 'list' && clause.elements && clause.elements[0]) {
+          if (clause.elements[0].type === 'symbol') {
+            const clauseName = clause.elements[0].value;
+
+            if (clauseName === 'catch' && clause.elements.length >= 3) {
+              const errorVar = clause.elements[1];
+              const catchBody = clause.elements[2];
+
+              if (errorVar.type === 'symbol') {
+                // 에러 변수 바인딩
+                this.setVar(errorVar.value, e.message);
+                // catch 블록 실행
+                result = this.evaluateExpression(catchBody);
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      // catch가 없으면 에러 재발생
+      if (!caught) {
+        throw e;
+      }
+    } finally {
+      // finally 블록 찾기 및 실행
+      for (let i = 1; i < args.length; i++) {
+        const clause = args[i];
+        if (clause.type === 'list' && clause.elements && clause.elements[0]) {
+          if (clause.elements[0].type === 'symbol') {
+            const clauseName = clause.elements[0].value;
+
+            if (clauseName === 'finally' && clause.elements.length >= 2) {
+              const finallyBody = clause.elements[1];
+              this.evaluateExpression(finallyBody);
+            }
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * throw: (throw error-type message)
+   */
+  evaluateThrow(args) {
+    let errorType = 'Error';
+    let message = 'Unknown error';
+
+    if (args.length >= 1) {
+      if (args[0].type === 'symbol' || args[0].type === 'string') {
+        const firstArg = this.evaluateExpression(args[0]);
+        if (args.length >= 2) {
+          errorType = String(firstArg);
+          message = String(this.evaluateExpression(args[1]));
+        } else {
+          message = String(firstArg);
+        }
+      }
+    }
+
+    throw new Error(`[${errorType}] ${message}`);
+  }
+
+  /**
+   * 반환값 저장소 (함수 내에서 사용)
+   */
+  get returnValue() {
+    return this._returnValue;
+  }
+
+  set returnValue(value) {
+    this._returnValue = value;
   }
 }
 
@@ -639,17 +1135,25 @@ class VTEvaluator {
  * VT Runtime Bridge - 메인 인터페이스
  */
 class VTRuntimeBridge {
-  constructor() {
-    this.evaluator = new VTEvaluator();
+  constructor(debugMode = false) {
+    this.evaluator = new VTEvaluator(debugMode);
+    this.debugMode = debugMode;
   }
 
   /**
    * VT 코드 실행
    * @param {string} vtCode - VT 코드 (스킴 형식)
-   * @returns {Object} {success, result, memory, errors}
+   * @param {boolean} debugMode - 디버그 모드 활성화
+   * @returns {Object} {success, result, memory, errors, trace (디버그용)}
    */
-  execute(vtCode) {
+  execute(vtCode, debugMode = false) {
     try {
+      // 디버그 모드 설정
+      if (debugMode) {
+        this.evaluator.debugMode = debugMode;
+        this.evaluator.executionTrace = [];
+      }
+
       // 1. 토크나이즈
       const tokenizer = new VTTokenizer(vtCode);
       const tokens = tokenizer.tokenize();
@@ -662,12 +1166,19 @@ class VTRuntimeBridge {
       const result = this.evaluator.evaluate(ast);
 
       // 4. 메모리 상태 반환
-      return {
+      const response = {
         success: true,
         result: result,
         memory: this.evaluator.getMemory(),
         errors: []
       };
+
+      // 디버그 모드: execution trace 포함
+      if (debugMode || this.debugMode) {
+        response.trace = this.evaluator.executionTrace;
+      }
+
+      return response;
     } catch (error) {
       return {
         success: false,

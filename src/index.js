@@ -489,13 +489,43 @@ class VTRuntime {
  * JSON 파일 읽기 → 컴파일 → 실행 → 결과 반환
  */
 class CLAUDELang {
-  constructor() {
+  constructor(debugMode = false) {
     this.compiler = new CLAUDELangCompiler();
     this.runtime = new VTRuntime();
+    this.moduleCache = new Map(); // 모듈 캐싱 (중복 로드 방지)
+    this.bytecodeCache = new Map(); // VT 바이트코드 캐싱
+    this.debugMode = debugMode;
+    this.cacheStats = {
+      hits: 0,
+      misses: 0,
+      compilations: 0
+    };
   }
 
   /**
-   * 파일 실행
+   * 프로그램의 해시값 계산 (캐싱용)
+   */
+  hashProgram(program) {
+    const crypto = require('crypto');
+    const str = JSON.stringify(program);
+    return crypto.createHash('sha256').update(str).digest('hex');
+  }
+
+  /**
+   * 모듈 import 처리
+   */
+  importModule(modulePath, baseDir) {
+    const result = this.compiler.resolveAndLoadModule(
+      modulePath,
+      baseDir,
+      this.moduleCache,
+      {}
+    );
+    return result;
+  }
+
+  /**
+   * 파일 실행 (모듈 지원)
    */
   runFile(jsonFilePath) {
     try {
@@ -503,8 +533,15 @@ class CLAUDELang {
       const fileContent = fs.readFileSync(jsonFilePath, 'utf-8');
       const program = JSON.parse(fileContent);
 
-      // 2. 컴파일
-      const compileResult = this.compiler.compile(program);
+      // 2. 파일의 기본 디렉토리 추출 (모듈 import를 위해)
+      const baseDir = path.dirname(path.resolve(jsonFilePath));
+
+      // 3. 컴파일 (모듈 지원)
+      const compileResult = this.compiler.compile(
+        program,
+        baseDir,
+        this.moduleCache
+      );
       if (!compileResult.success) {
         return {
           success: false,
@@ -512,11 +549,11 @@ class CLAUDELang {
         };
       }
 
-      // 3. VT 런타임에서 실행
+      // 4. VT 런타임에서 실행
       this.runtime = new VTRuntime(); // 런타임 초기화
       const executionResult = this.runtime.execute(compileResult.code);
 
-      // 4. 결과 반환
+      // 5. 결과 반환
       return {
         success: executionResult.success,
         output: executionResult.output,
@@ -535,24 +572,47 @@ class CLAUDELang {
   }
 
   /**
-   * 프로그램 문자열 실행
+   * 프로그램 문자열 실행 (모듈 지원 + 바이트코드 캐싱 + 디버그 모드)
    */
-  runProgram(program) {
+  runProgram(program, baseDir = process.cwd(), debugMode = null) {
     try {
-      // 1. 컴파일
-      const compileResult = this.compiler.compile(program);
-      if (!compileResult.success) {
-        return {
-          success: false,
-          error: `Compilation failed: ${compileResult.errors.join(', ')}`,
-        };
+      // debugMode가 null이면 인스턴스 설정 사용
+      const enableDebug = debugMode !== null ? debugMode : this.debugMode;
+
+      // 1. 바이트코드 캐시 확인
+      const programHash = this.hashProgram(program);
+      let vtCode;
+      let cachedCompilation = false;
+
+      if (this.bytecodeCache.has(programHash)) {
+        vtCode = this.bytecodeCache.get(programHash);
+        this.cacheStats.hits++;
+        cachedCompilation = true;
+      } else {
+        // 2. 컴파일 (모듈 지원)
+        const compileResult = this.compiler.compile(
+          program,
+          baseDir,
+          this.moduleCache
+        );
+        if (!compileResult.success) {
+          return {
+            success: false,
+            error: `Compilation failed: ${compileResult.errors.join(', ')}`,
+          };
+        }
+
+        vtCode = compileResult.code;
+        this.bytecodeCache.set(programHash, vtCode);
+        this.cacheStats.misses++;
+        this.cacheStats.compilations++;
       }
 
-      // 2. 실행
+      // 3. 실행 (디버그 모드 지원)
       this.runtime = new VTRuntime();
-      const executionResult = this.runtime.execute(compileResult.code);
+      const executionResult = this.runtime.execute(vtCode);
 
-      return {
+      const result = {
         success: executionResult.success,
         output: executionResult.output,
         result: executionResult.result,
@@ -560,13 +620,49 @@ class CLAUDELang {
         memoryUsage: executionResult.memoryUsage,
         instructionCount: executionResult.instructionCount,
         error: executionResult.error,
+        _cached: cachedCompilation // 내부 통계용
       };
+
+      // 디버그 모드: execution trace 포함
+      if (enableDebug && executionResult.trace) {
+        result.trace = executionResult.trace;
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
         error: error.message,
       };
     }
+  }
+
+  /**
+   * 캐시 통계 조회
+   */
+  getCacheStats() {
+    const total = this.cacheStats.hits + this.cacheStats.misses;
+    const hitRate = total === 0 ? 0 : ((this.cacheStats.hits / total) * 100).toFixed(2);
+    return {
+      hits: this.cacheStats.hits,
+      misses: this.cacheStats.misses,
+      total: total,
+      hitRate: `${hitRate}%`,
+      compilations: this.cacheStats.compilations,
+      cacheSize: this.bytecodeCache.size
+    };
+  }
+
+  /**
+   * 캐시 초기화
+   */
+  clearBytecodeCache() {
+    this.bytecodeCache.clear();
+    this.cacheStats = {
+      hits: 0,
+      misses: 0,
+      compilations: 0
+    };
   }
 
   /**

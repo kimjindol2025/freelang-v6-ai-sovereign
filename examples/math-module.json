@@ -1,0 +1,114 @@
+{
+  "version": "6.0",
+  "description": "모듈: 수학 함수 (factorial, fibonacci)",
+  "exports": ["factorial", "fibonacci"],
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "재귀 함수: 팩토리얼"
+    },
+    {
+      "type": "function",
+      "name": "factorial",
+      "params": [
+        {"name": "n", "type": "i32"}
+      ],
+      "return_type": "i32",
+      "body": [
+        {
+          "type": "condition",
+          "test": {
+            "type": "comparison",
+            "operator": "<=",
+            "left": {"type": "ref", "name": "n"},
+            "right": {"type": "literal", "value_type": "i32", "value": 1}
+          },
+          "then": [
+            {"type": "return", "value": {"type": "literal", "value_type": "i32", "value": 1}}
+          ],
+          "else": [
+            {
+              "type": "return",
+              "value": {
+                "type": "arithmetic",
+                "operator": "*",
+                "left": {"type": "ref", "name": "n"},
+                "right": {
+                  "type": "call",
+                  "function": "factorial",
+                  "args": [
+                    {
+                      "type": "arithmetic",
+                      "operator": "-",
+                      "left": {"type": "ref", "name": "n"},
+                      "right": {"type": "literal", "value_type": "i32", "value": 1}
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "comment",
+      "text": "재귀 함수: 피보나치 수열"
+    },
+    {
+      "type": "function",
+      "name": "fibonacci",
+      "params": [
+        {"name": "n", "type": "i32"}
+      ],
+      "return_type": "i32",
+      "body": [
+        {
+          "type": "condition",
+          "test": {
+            "type": "comparison",
+            "operator": "<=",
+            "left": {"type": "ref", "name": "n"},
+            "right": {"type": "literal", "value_type": "i32", "value": 1}
+          },
+          "then": [
+            {"type": "return", "value": {"type": "ref", "name": "n"}}
+          ],
+          "else": [
+            {
+              "type": "return",
+              "value": {
+                "type": "arithmetic",
+                "operator": "+",
+                "left": {
+                  "type": "call",
+                  "function": "fibonacci",
+                  "args": [
+                    {
+                      "type": "arithmetic",
+                      "operator": "-",
+                      "left": {"type": "ref", "name": "n"},
+                      "right": {"type": "literal", "value_type": "i32", "value": 1}
+                    }
+                  ]
+                },
+                "right": {
+                  "type": "call",
+                  "function": "fibonacci",
+                  "args": [
+                    {
+                      "type": "arithmetic",
+                      "operator": "-",
+                      "left": {"type": "ref", "name": "n"},
+                      "right": {"type": "literal", "value_type": "i32", "value": 2}
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

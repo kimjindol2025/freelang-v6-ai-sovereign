@@ -1,0 +1,93 @@
+{
+  "version": "6.0",
+  "description": "제너릭 타입: Map<K,V> 사용",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Map 생성"
+    },
+    {
+      "type": "call",
+      "function": "Map.create",
+      "args": [],
+      "assign_to": "scores"
+    },
+    {
+      "type": "comment",
+      "text": "Map에 값 저장"
+    },
+    {
+      "type": "call",
+      "function": "Map.set",
+      "args": [
+        {"type": "ref", "name": "scores"},
+        {"type": "literal", "value_type": "string", "value": "Alice"},
+        {"type": "literal", "value_type": "i32", "value": 95}
+      ],
+      "assign_to": "scores"
+    },
+    {
+      "type": "call",
+      "function": "Map.set",
+      "args": [
+        {"type": "ref", "name": "scores"},
+        {"type": "literal", "value_type": "string", "value": "Bob"},
+        {"type": "literal", "value_type": "i32", "value": 87}
+      ],
+      "assign_to": "scores"
+    },
+    {
+      "type": "call",
+      "function": "Map.set",
+      "args": [
+        {"type": "ref", "name": "scores"},
+        {"type": "literal", "value_type": "string", "value": "Charlie"},
+        {"type": "literal", "value_type": "i32", "value": 92}
+      ],
+      "assign_to": "scores"
+    },
+    {
+      "type": "comment",
+      "text": "Map에서 값 조회"
+    },
+    {
+      "type": "call",
+      "function": "Map.get",
+      "args": [
+        {"type": "ref", "name": "scores"},
+        {"type": "literal", "value_type": "string", "value": "Alice"}
+      ],
+      "assign_to": "aliceScore"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "literal", "value_type": "string", "value": "Alice's score: "}]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "ref", "name": "aliceScore"}]
+    },
+    {
+      "type": "comment",
+      "text": "Map 크기 조회"
+    },
+    {
+      "type": "call",
+      "function": "Map.size",
+      "args": [{"type": "ref", "name": "scores"}],
+      "assign_to": "mapSize"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "literal", "value_type": "string", "value": "Total students: "}]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "ref", "name": "mapSize"}]
+    }
+  ]
+}

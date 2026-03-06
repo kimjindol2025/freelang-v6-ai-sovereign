@@ -1,0 +1,77 @@
+{
+  "version": "6.0",
+  "description": "재귀 함수: 팩토리얼 계산",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "재귀 함수 정의: factorial(n)"
+    },
+    {
+      "type": "function",
+      "name": "factorial",
+      "params": [
+        {"name": "n", "type": "i32"}
+      ],
+      "return_type": "i32",
+      "body": [
+        {
+          "type": "comment",
+          "text": "베이스 케이스: n <= 1 이면 1 반환"
+        },
+        {
+          "type": "condition",
+          "test": {
+            "type": "comparison",
+            "operator": "<=",
+            "left": {"type": "ref", "name": "n"},
+            "right": {"type": "literal", "value_type": "i32", "value": 1}
+          },
+          "then": [
+            {"type": "return", "value": {"type": "literal", "value_type": "i32", "value": 1}}
+          ],
+          "else": [
+            {
+              "type": "comment",
+              "text": "재귀 케이스: n * factorial(n-1)"
+            },
+            {
+              "type": "return",
+              "value": {
+                "type": "arithmetic",
+                "operator": "*",
+                "left": {"type": "ref", "name": "n"},
+                "right": {
+                  "type": "call",
+                  "function": "factorial",
+                  "args": [
+                    {
+                      "type": "arithmetic",
+                      "operator": "-",
+                      "left": {"type": "ref", "name": "n"},
+                      "right": {"type": "literal", "value_type": "i32", "value": 1}
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "comment",
+      "text": "테스트: factorial(5) = 120"
+    },
+    {
+      "type": "call",
+      "function": "factorial",
+      "args": [{"type": "literal", "value_type": "i32", "value": 5}],
+      "assign_to": "result"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [{"type": "ref", "name": "result"}]
+    }
+  ]
+}

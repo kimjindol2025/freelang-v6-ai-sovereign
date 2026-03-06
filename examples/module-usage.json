@@ -1,0 +1,64 @@
+{
+  "version": "6.0",
+  "description": "모듈 사용: math-module에서 함수 import",
+  "imports": [
+    {
+      "module": "./math-module",
+      "symbols": ["factorial", "fibonacci"]
+    }
+  ],
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "모듈에서 import한 factorial 함수 사용"
+    },
+    {
+      "type": "call",
+      "function": "factorial",
+      "args": [
+        {"type": "literal", "value_type": "i32", "value": 5}
+      ],
+      "assign_to": "fact_5"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "factorial(5) = "}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [
+        {"type": "ref", "name": "fact_5"}
+      ]
+    },
+    {
+      "type": "comment",
+      "text": "모듈에서 import한 fibonacci 함수 사용"
+    },
+    {
+      "type": "call",
+      "function": "fibonacci",
+      "args": [
+        {"type": "literal", "value_type": "i32", "value": 10}
+      ],
+      "assign_to": "fib_10"
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "fibonacci(10) = "}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "println",
+      "args": [
+        {"type": "ref", "name": "fib_10"}
+      ]
+    }
+  ]
+}

@@ -44,8 +44,11 @@ class TestRunner {
       const content = fs.readFileSync(jsonPath, 'utf8');
       const json = JSON.parse(content);
 
-      // 컴파일
-      const compiled = this.compiler.compile(json);
+      // 모듈 import를 위해 JSON 파일의 기본 디렉토리 설정
+      const baseDir = path.dirname(path.resolve(jsonPath));
+
+      // 컴파일 (모듈 지원)
+      const compiled = this.compiler.compile(json, baseDir, new Map());
 
       if (!compiled.success) {
         log('red', `✗ ${name}`);

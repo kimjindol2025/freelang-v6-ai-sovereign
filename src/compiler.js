@@ -70,11 +70,32 @@ class CLAUDELangCompiler {
 
     // Print (기본)
     this.registerFunction("print", ["value: any"], "null");
+    this.registerFunction("println", ["value: any"], "null");
 
     // IO (입출력)
     this.registerFunction("IO.print", ["value: any"], "null");
     this.registerFunction("IO.print_array", ["array: Array"], "null");
     this.registerFunction("IO.print_object", ["obj: Object"], "null");
+
+    // Map (제너릭 컬렉션)
+    this.registerFunction("Map.create", [], "Map<any,any>");
+    this.registerFunction("Map.get", ["map: Map", "key: any"], "any");
+    this.registerFunction("Map.set", ["map: Map", "key: any", "value: any"], "Map");
+    this.registerFunction("Map.has", ["map: Map", "key: any"], "bool");
+    this.registerFunction("Map.delete", ["map: Map", "key: any"], "bool");
+    this.registerFunction("Map.keys", ["map: Map"], "Array");
+    this.registerFunction("Map.values", ["map: Map"], "Array");
+    this.registerFunction("Map.size", ["map: Map"], "i32");
+    this.registerFunction("Map.clear", ["map: Map"], "null");
+
+    // Set (제너릭 컬렉션)
+    this.registerFunction("Set.create", [], "Set<any>");
+    this.registerFunction("Set.add", ["set: Set", "value: any"], "Set");
+    this.registerFunction("Set.has", ["set: Set", "value: any"], "bool");
+    this.registerFunction("Set.delete", ["set: Set", "value: any"], "bool");
+    this.registerFunction("Set.size", ["set: Set"], "i32");
+    this.registerFunction("Set.clear", ["set: Set"], "null");
+    this.registerFunction("Set.toArray", ["set: Set"], "Array");
   }
 
   registerFunction(name, params, returnType, minParams = null) {
@@ -86,18 +107,47 @@ class CLAUDELangCompiler {
   }
 
   /**
-   * 주요 컴파일 함수
+   * 주요 컴파일 함수 (3-pass compilation)
    */
-  compile(claudelangJson) {
+  compile(claudelangJson, baseDir = process.cwd(), moduleCache = new Map()) {
     try {
-      // 1. 검증
+      // 0. 모듈 처리 (3-pass: import/export)
+      const imports = claudelangJson.imports || [];
+      const loadedModules = {};
+      this.loadingModules = this.loadingModules || new Set();
+
+      for (const importItem of imports) {
+        const modulePath = importItem.module;
+        const symbols = importItem.symbols || null; // null = 전체 import
+        const resolved = this.resolveAndLoadModule(
+          modulePath,
+          baseDir,
+          moduleCache,
+          loadedModules,
+          symbols
+        );
+        if (!resolved.success) {
+          throw new Error(`Failed to import ${modulePath}: ${resolved.error}`);
+        }
+      }
+
+      // 1. 사용자 정의 함수 미리 등록 (2-pass: first pass)
+      this.collectFunctionDefinitions(claudelangJson);
+
+      // 2. 검증
       this.validate(claudelangJson);
 
-      // 2. 타입 검사
+      // 3. 타입 검사
       this.typeCheck(claudelangJson);
 
-      // 3. VT 코드 생성
-      const vtCode = this.generateVTCode(claudelangJson);
+      // 4. VT 코드 생성
+      let vtCode = this.generateVTCode(claudelangJson);
+
+      // 모듈 내보내기 주석 추가
+      if (claudelangJson.exports && claudelangJson.exports.length > 0) {
+        const exportComment = `; 내보내기: ${claudelangJson.exports.join(", ")}\n`;
+        vtCode = exportComment + vtCode;
+      }
 
       return {
         success: true,
@@ -111,6 +161,112 @@ class CLAUDELangCompiler {
         errors: [error.message],
       };
     }
+  }
+
+  /**
+   * 모듈 해석 및 로드 (순환 import 감지 + 선택적 심볼 import)
+   */
+  resolveAndLoadModule(modulePath, baseDir, moduleCache, loadedModules, symbols = null) {
+    const fs = require('fs');
+    const path = require('path');
+
+    // 절대 경로로 변환
+    const resolvedPath = path.isAbsolute(modulePath)
+      ? modulePath
+      : path.join(baseDir, modulePath);
+
+    // 확장자 추가 (.json이 없으면)
+    const fullPath = resolvedPath.endsWith('.json')
+      ? resolvedPath
+      : resolvedPath + '.json';
+
+    // 순환 import 감지
+    if (this.loadingModules.has(fullPath)) {
+      return {
+        success: false,
+        error: `Circular import detected: ${fullPath}`
+      };
+    }
+
+    // 캐시에서 확인
+    if (moduleCache.has(fullPath)) {
+      return {
+        success: true,
+        module: moduleCache.get(fullPath)
+      };
+    }
+
+    try {
+      this.loadingModules.add(fullPath);
+      const content = fs.readFileSync(fullPath, 'utf8');
+      const moduleJson = JSON.parse(content);
+
+      // 모듈의 재귀적 import 처리
+      const moduleDir = path.dirname(fullPath);
+      const moduleImports = moduleJson.imports || [];
+      for (const importItem of moduleImports) {
+        const result = this.resolveAndLoadModule(
+          importItem.module,
+          moduleDir,
+          moduleCache,
+          loadedModules,
+          importItem.symbols
+        );
+        if (!result.success) {
+          return result;
+        }
+      }
+
+      // 모듈의 함수 등록 (선택적 import 지원)
+      if (moduleJson.instructions && Array.isArray(moduleJson.instructions)) {
+        moduleJson.instructions.forEach((instr) => {
+          if (instr.type === "function") {
+            // symbols 필터링: null이면 전체, 배열이면 해당하는 것만
+            const shouldRegister = !symbols || symbols.includes(instr.name);
+
+            if (shouldRegister) {
+              const paramTypes = instr.params.map(p => `${p.name}: ${p.type || "any"}`);
+              const returnType = instr.return_type || "any";
+              this.registerFunction(instr.name, paramTypes, returnType);
+            }
+          }
+        });
+      }
+
+      // 캐시에 저장
+      moduleCache.set(fullPath, moduleJson);
+      this.loadingModules.delete(fullPath);
+
+      return {
+        success: true,
+        module: moduleJson
+      };
+    } catch (error) {
+      this.loadingModules.delete(fullPath);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * 함수 정의 사전 수집 (2-pass compilation - first pass)
+   * 타입 체크 전에 모든 함수 정의를 등록하여 forward reference 허용
+   */
+  collectFunctionDefinitions(obj) {
+    if (!Array.isArray(obj.instructions)) {
+      return;
+    }
+
+    obj.instructions.forEach((instr) => {
+      if (instr.type === "function") {
+        // 함수 정의를 vtFunctions에 등록
+        const paramTypes = instr.params.map(p => `${p.name}: ${p.type || "any"}`);
+        const returnType = instr.return_type || "any";
+        this.registerFunction(instr.name, paramTypes, returnType);
+      }
+    });
   }
 
   /**
@@ -166,6 +322,42 @@ class CLAUDELangCompiler {
           break;
 
         case "comment":
+          break;
+
+        case "function":
+          if (!instr.name || !Array.isArray(instr.params) || !Array.isArray(instr.body)) {
+            throw new Error(`FunctionDeclaration at line ${idx} missing required fields`);
+          }
+          break;
+
+        case "return":
+          if (!instr.value) {
+            throw new Error(`ReturnInstruction at line ${idx} missing value`);
+          }
+          break;
+
+        case "try":
+          if (!Array.isArray(instr.body)) {
+            throw new Error(`TryInstruction at line ${idx} missing body`);
+          }
+          break;
+
+        case "throw":
+          if (!instr.message) {
+            throw new Error(`ThrowInstruction at line ${idx} missing message`);
+          }
+          break;
+
+        case "class":
+          if (!instr.name || !Array.isArray(instr.body)) {
+            throw new Error(`ClassDeclaration at line ${idx} missing required fields`);
+          }
+          break;
+
+        case "new":
+          if (!instr.class_name || !Array.isArray(instr.args)) {
+            throw new Error(`NewInstruction at line ${idx} missing required fields`);
+          }
           break;
 
         default:
@@ -257,6 +449,62 @@ class CLAUDELangCompiler {
 
       case "loop":
         // 범위 검사 (선택사항)
+        break;
+
+      case "function":
+        // 함수 정의: 함수명을 scope에 등록
+        this.scope.set(instr.name, `fn[${instr.params.map(p => p.type || "any").join(",")}]`);
+        // 파라미터도 scope에 등록
+        if (instr.params && Array.isArray(instr.params)) {
+          instr.params.forEach(param => {
+            this.scope.set(param.name, param.type || "any");
+          });
+        }
+        // 함수 바디의 각 instruction을 검사
+        if (instr.body && Array.isArray(instr.body)) {
+          instr.body.forEach(bodyInstr => {
+            this.checkInstruction(bodyInstr);
+          });
+        }
+        break;
+
+      case "return":
+        // return 값의 타입을 검사 (선택사항)
+        if (instr.value) {
+          this.inferType(instr.value);
+        }
+        break;
+
+      case "try":
+        // try 블록 내의 instruction들을 검사
+        if (instr.body && Array.isArray(instr.body)) {
+          instr.body.forEach(bodyInstr => {
+            this.checkInstruction(bodyInstr);
+          });
+        }
+        // catch 블록 검사
+        if (instr.catch && Array.isArray(instr.catch.body)) {
+          instr.catch.body.forEach(catchInstr => {
+            this.checkInstruction(catchInstr);
+          });
+        }
+        // finally 블록 검사
+        if (instr.finally && Array.isArray(instr.finally)) {
+          instr.finally.forEach(finallyInstr => {
+            this.checkInstruction(finallyInstr);
+          });
+        }
+        break;
+
+      case "throw":
+        // throw 메시지 타입 검사 (선택사항)
+        if (instr.message) {
+          this.inferType(instr.message);
+        }
+        break;
+
+      case "comment":
+        // 주석은 무시
         break;
     }
   }
@@ -365,6 +613,18 @@ class CLAUDELangCompiler {
 
       case "property_access":
         return this.generatePropertyAccessInstruction(instr);
+
+      case "function":
+        return this.generateFunctionDeclaration(instr);
+
+      case "return":
+        return this.generateReturnStatement(instr);
+
+      case "try":
+        return this.generateTryStatement(instr);
+
+      case "throw":
+        return this.generateThrowStatement(instr);
 
       case "comment":
         return `; ${instr.text}`;
@@ -497,28 +757,53 @@ class CLAUDELangCompiler {
 
   generateConditionInstruction(instr) {
     const test = this.generateExpression(instr.test);
-    const thenCode = instr.then
+
+    // 주석과 코드를 분리하여 처리
+    const thenLines = instr.then
       .map((i) => this.generateInstruction(i))
-      .filter((i) => i !== null)
+      .filter((i) => i !== null);
+
+    const comments = thenLines.filter((line) => line.startsWith(";")).join("\n");
+    const thenCode = thenLines
+      .filter((line) => !line.startsWith(";"))
       .join(" ");
-    const elseCode = instr.else
+
+    const elseLines = instr.else
       ? instr.else
           .map((i) => this.generateInstruction(i))
           .filter((i) => i !== null)
-          .join(" ")
-      : "null";
+      : [];
 
-    return `(if ${test} (do ${thenCode}) (do ${elseCode}))`;
+    const elseComments = elseLines.filter((line) => line.startsWith(";")).join("\n");
+    const elseCode = elseLines
+      .filter((line) => !line.startsWith(";"))
+      .join(" ") || "null";
+
+    let result = "";
+    if (comments) result += comments + "\n";
+    if (elseComments) result += elseComments + "\n";
+
+    result += `(if ${test} (do ${thenCode}) (do ${elseCode}))`;
+    return result;
   }
 
   generateLoopInstruction(instr) {
     const range = this.generateExpression(instr.range);
-    const body = instr.body
+
+    // 주석과 코드를 분리하여 처리
+    const bodyLines = instr.body
       .map((i) => this.generateInstruction(i))
-      .filter((i) => i !== null)
+      .filter((i) => i !== null);
+
+    const comments = bodyLines.filter((line) => line.startsWith(";")).join("\n");
+    const bodyCode = bodyLines
+      .filter((line) => !line.startsWith(";"))
       .join(" ");
 
-    return `(for ${instr.iterator} ${range} (do ${body}))`;
+    let result = "";
+    if (comments) result += comments + "\n";
+    result += `(for ${instr.iterator} ${range} (do ${bodyCode}))`;
+    return result;
   }
 
   generateArithmeticInstruction(instr) {
@@ -555,6 +840,82 @@ class CLAUDELangCompiler {
     } else {
       return callCode;
     }
+  }
+
+  /**
+   * 함수 정의 생성: (defn name (params...) body...)
+   */
+  generateFunctionDeclaration(instr) {
+    const params = instr.params
+      .map(p => p.name)
+      .join(" ");
+
+    const bodyLines = instr.body
+      .map(b => this.generateInstruction(b))
+      .filter(line => line !== null);
+
+    const bodyCode = bodyLines.join("\n    ");
+
+    return `(defn ${instr.name} (${params})\n    ${bodyCode})`;
+  }
+
+  /**
+   * 반환 명령어 생성
+   */
+  generateReturnStatement(instr) {
+    const value = this.generateExpression(instr.value);
+    return `(return ${value})`;
+  }
+
+  /**
+   * try/catch/finally 생성
+   */
+  generateTryStatement(instr) {
+    // 주석과 코드를 분리하여 처리
+    const bodyLines = instr.body
+      .map(b => this.generateInstruction(b))
+      .filter(line => line !== null);
+
+    const comments = bodyLines.filter((line) => line.startsWith(";")).join("\n");
+    const bodyCode = bodyLines
+      .filter((line) => !line.startsWith(";"))
+      .join(" ");
+
+    let result = "";
+    if (comments) result += comments + "\n";
+    result += `(try (do ${bodyCode})`;
+
+    if (instr.catch) {
+      const catchLines = instr.catch.body
+        .map(b => this.generateInstruction(b))
+        .filter(line => line !== null);
+      const catchCode = catchLines
+        .filter((line) => !line.startsWith(";"))
+        .join(" ");
+      result += ` (catch ${instr.catch.error_var} (do ${catchCode}))`;
+    }
+
+    if (instr.finally && instr.finally.length > 0) {
+      const finallyLines = instr.finally
+        .map(b => this.generateInstruction(b))
+        .filter(line => line !== null);
+      const finallyCode = finallyLines
+        .filter((line) => !line.startsWith(";"))
+        .join(" ");
+      result += ` (finally (do ${finallyCode}))`;
+    }
+
+    result += ")";
+    return result;
+  }
+
+  /**
+   * throw 명령어 생성
+   */
+  generateThrowStatement(instr) {
+    const message = this.generateExpression(instr.message);
+    const errorType = instr.error_type || "Error";
+    return `(throw "${errorType}" ${message})`;
   }
 }
 
