@@ -1,0 +1,87 @@
+{
+  "totalFiles": 14,
+  "successfulCompilations": 4,
+  "successfulExecutions": 4,
+  "averageExecutionTime": 0.14285714285714285,
+  "totalMemoryUsage": 0.05144500732421875,
+  "results": [
+    {
+      "file": "api-response-processing.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "array-example.json",
+      "compilation": true,
+      "execution": true,
+      "time": 1,
+      "memory": 0.01345062255859375
+    },
+    {
+      "file": "conditional-workflow.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "csv-parsing.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "data-aggregation.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "data-filtering.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "data-mapping.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "http-example.json",
+      "compilation": true,
+      "execution": true,
+      "time": 1,
+      "memory": 0.0225982666015625
+    },
+    {
+      "file": "loop-with-condition.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "markdown-example.json",
+      "compilation": true,
+      "execution": true,
+      "time": 0,
+      "memory": 0.01197052001953125
+    },
+    {
+      "file": "nested-operations.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "simple.json",
+      "compilation": true,
+      "execution": true,
+      "time": 0,
+      "memory": 0.00342559814453125
+    },
+    {
+      "file": "string-split.json",
+      "compilation": false,
+      "execution": false
+    },
+    {
+      "file": "string-transformation.json",
+      "compilation": false,
+      "execution": false
+    }
+  ]
+}

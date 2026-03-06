@@ -1,0 +1,59 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "배열 변환 예제 - 각 숫자를 제곱값으로 변환"
+    },
+    {
+      "type": "var",
+      "name": "numbers",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 1},
+          {"type": "literal", "value_type": "i32", "value": 2},
+          {"type": "literal", "value_type": "i32", "value": 3},
+          {"type": "literal", "value_type": "i32", "value": 4},
+          {"type": "literal", "value_type": "i32", "value": 5}
+        ]
+      }
+    },
+    {
+      "type": "comment",
+      "text": "람다 함수를 사용한 매핑: n * n"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "numbers"},
+        {
+          "type": "lambda",
+          "params": ["n"],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "*",
+              "left": {"type": "ref", "name": "n"},
+              "right": {"type": "ref", "name": "n"}
+            }
+          ]
+        }
+      ],
+      "assign_to": "squared_numbers"
+    },
+    {
+      "type": "comment",
+      "text": "변환된 배열 출력"
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "squared_numbers"}
+      ]
+    }
+  ]
+}

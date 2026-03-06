@@ -1,0 +1,67 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "배열 필터링 예제 - 짝수만 추출"
+    },
+    {
+      "type": "var",
+      "name": "numbers",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 1},
+          {"type": "literal", "value_type": "i32", "value": 2},
+          {"type": "literal", "value_type": "i32", "value": 3},
+          {"type": "literal", "value_type": "i32", "value": 4},
+          {"type": "literal", "value_type": "i32", "value": 5},
+          {"type": "literal", "value_type": "i32", "value": 6},
+          {"type": "literal", "value_type": "i32", "value": 7},
+          {"type": "literal", "value_type": "i32", "value": 8}
+        ]
+      }
+    },
+    {
+      "type": "comment",
+      "text": "람다 함수를 사용한 필터링: 짝수 조건 (n % 2 == 0)"
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "numbers"},
+        {
+          "type": "lambda",
+          "params": ["n"],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": "==",
+              "left": {
+                "type": "arithmetic",
+                "operator": "%",
+                "left": {"type": "ref", "name": "n"},
+                "right": {"type": "literal", "value_type": "i32", "value": 2}
+              },
+              "right": {"type": "literal", "value_type": "i32", "value": 0}
+            }
+          ]
+        }
+      ],
+      "assign_to": "even_numbers"
+    },
+    {
+      "type": "comment",
+      "text": "결과 출력"
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "even_numbers"}
+      ]
+    }
+  ]
+}

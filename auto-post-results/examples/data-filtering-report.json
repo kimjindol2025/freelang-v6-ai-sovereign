@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-06T01:36:24.604Z",
+  "metadata": {
+    "filename": "data-filtering.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/data-filtering.json"
+  },
+  "compilation": {
+    "success": false,
+    "errors": [
+      "Type error at instruction 5: Unknown function: IO.print_array"
+    ]
+  },
+  "execution": {
+    "success": false,
+    "error": "컴파일 실패로 인해 실행되지 않음"
+  },
+  "performance": {
+    "totalProcessingTime": 0
+  },
+  "markdown": "# CLAUDELang v6.0 실행 실패\n\n**파일**: data-filtering.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 컴파일 에러\n- ❌ Type error at instruction 5: Unknown function: IO.print_array\n\n## 원본 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 필터링 예제 - 짝수만 추출\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 1\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 2\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 3\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 4\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 5\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 6\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 7\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 8\n          }\n        ]\n      }\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"람다 함수를 사용한 필터링: 짝수 조건 (n % 2 == 0)\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.filter\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"numbers\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"n\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"comparison\",\n              \"operator\": \"==\",\n              \"left\": {\n                \"type\": \"arithmetic\",\n                \"operator\": \"%\",\n                \"left\": {\n                  \"type\": \"ref\",\n                  \"name\": \"n\"\n                },\n                \"right\": {\n                  \"type\": \"literal\",\n                  \"value_type\": \"i32\",\n                  \"value\": 2\n                }\n              },\n              \"right\": {\n                \"type\": \"literal\",\n                \"value_type\": \"i32\",\n                \"value\": 0\n              }\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"even_numbers\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"결과 출력\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print_array\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"even_numbers\"\n        }\n      ]\n    }\n  ]\n}\n```\n"
+}

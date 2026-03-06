@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-03-06T01:36:22.341Z",
+  "metadata": {
+    "filename": "simple.json",
+    "filePath": "examples/simple.json"
+  },
+  "compilation": {
+    "success": true,
+    "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; CLAUDELang v6.0 첫 번째 프로그램\n(define message \"Hello, CLAUDELang!\")\n(call print message)",
+    "errors": [],
+    "vtCodeLength": 143
+  },
+  "execution": {
+    "success": true,
+    "output": [
+      "Hello, CLAUDELang!"
+    ],
+    "executionTime": 1,
+    "memoryUsage": 0.01587677001953125,
+    "instructionCount": 2
+  },
+  "performance": {
+    "totalProcessingTime": 2,
+    "compilationPhase": "included in total",
+    "executionPhase": 1
+  },
+  "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: simple.json\n**실행 시간**: 2026. 3. 6. AM 10:36:22\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 143 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; CLAUDELang v6.0 첫 번째 프로그램\n(define message \"Hello, CLAUDELang!\")\n(call print message)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 1ms\n- **메모리 사용량**: 0.02MB\n- **명령어 수**: 2\n\n### 출력 결과\n```\nHello, CLAUDELang!\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"CLAUDELang v6.0 첫 번째 프로그램\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"message\",\n      \"value_type\": \"string\",\n      \"value\": \"Hello, CLAUDELang!\"\n    },\n    {\n      \"type\": \"call\",\n... (10개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 1ms |\n| 메모리 사용 | 0.02MB |\n| 명령어 수 | 2 |\n"
+}

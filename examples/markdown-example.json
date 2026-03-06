@@ -1,0 +1,62 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "Markdown 문서 생성 예제"
+    },
+    {
+      "type": "var",
+      "name": "doc",
+      "value_type": "Object",
+      "value": {
+        "type": "call",
+        "function": "Markdown.create"
+      }
+    },
+    {
+      "type": "call",
+      "function": "Markdown.heading",
+      "args": [
+        {"type": "ref", "name": "doc"},
+        {"type": "literal", "value_type": "i32", "value": 1},
+        {"type": "literal", "value_type": "string", "value": "CLAUDELang 자동 포스팅"}
+      ],
+      "assign_to": "doc"
+    },
+    {
+      "type": "call",
+      "function": "Markdown.paragraph",
+      "args": [
+        {"type": "ref", "name": "doc"},
+        {"type": "literal", "value_type": "string", "value": "이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다."}
+      ],
+      "assign_to": "doc"
+    },
+    {
+      "type": "call",
+      "function": "Markdown.code",
+      "args": [
+        {"type": "ref", "name": "doc"},
+        {"type": "literal", "value_type": "string", "value": "json"},
+        {"type": "literal", "value_type": "string", "value": "{\"version\": \"6.0\"}"}
+      ],
+      "assign_to": "doc"
+    },
+    {
+      "type": "call",
+      "function": "Markdown.build",
+      "args": [
+        {"type": "ref", "name": "doc"}
+      ],
+      "assign_to": "result"
+    },
+    {
+      "type": "call",
+      "function": "print",
+      "args": [
+        {"type": "ref", "name": "result"}
+      ]
+    }
+  ]
+}

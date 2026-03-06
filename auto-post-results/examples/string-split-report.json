@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-06T01:36:24.610Z",
+  "metadata": {
+    "filename": "string-split.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/string-split.json"
+  },
+  "compilation": {
+    "success": false,
+    "errors": [
+      "Type error at instruction 7: Unknown function: IO.print_array"
+    ]
+  },
+  "execution": {
+    "success": false,
+    "error": "컴파일 실패로 인해 실행되지 않음"
+  },
+  "performance": {
+    "totalProcessingTime": 0
+  },
+  "markdown": "# CLAUDELang v6.0 실행 실패\n\n**파일**: string-split.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 컴파일 에러\n- ❌ Type error at instruction 7: Unknown function: IO.print_array\n\n## 원본 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"문자열 분할 예제 - 쉼표로 구분된 값 파싱\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"csv_line\",\n      \"value_type\": \"string\",\n      \"value\": \"apple,banana,cherry,date\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"구분자로 문자열 분할\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"String.split\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"csv_line\"\n        },\n        {\n          \"type\": \"literal\",\n          \"value_type\": \"string\",\n          \"value\": \",\"\n        }\n      ],\n      \"assign_to\": \"items\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"각 항목의 공백 제거 (trim)\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.map\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"items\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"item\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"call\",\n              \"function\": \"String.trim\",\n              \"args\": [\n                {\n                  \"type\": \"ref\",\n                  \"name\": \"item\"\n                }\n              ]\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"trimmed_items\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"결과 출력\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print_array\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"trimmed_items\"\n        }\n      ]\n    }\n  ]\n}\n```\n"
+}

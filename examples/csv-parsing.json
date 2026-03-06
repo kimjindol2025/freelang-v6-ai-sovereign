@@ -1,0 +1,125 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "CSV 파싱 예제 - 행과 열 분석"
+    },
+    {
+      "type": "var",
+      "name": "csv_data",
+      "value_type": "string",
+      "value": "name,age,city\nAlice,30,Seoul\nBob,25,Busan\nCharlie,35,Incheon"
+    },
+    {
+      "type": "comment",
+      "text": "CSV를 줄(newline)로 분할"
+    },
+    {
+      "type": "call",
+      "function": "String.split",
+      "args": [
+        {"type": "ref", "name": "csv_data"},
+        {"type": "literal", "value_type": "string", "value": "\n"}
+      ],
+      "assign_to": "rows"
+    },
+    {
+      "type": "comment",
+      "text": "헤더 추출 (첫 번째 행)"
+    },
+    {
+      "type": "call",
+      "function": "Array.get",
+      "args": [
+        {"type": "ref", "name": "rows"},
+        {"type": "literal", "value_type": "i32", "value": 0}
+      ],
+      "assign_to": "header_line"
+    },
+    {
+      "type": "comment",
+      "text": "헤더를 쉼표로 분할"
+    },
+    {
+      "type": "call",
+      "function": "String.split",
+      "args": [
+        {"type": "ref", "name": "header_line"},
+        {"type": "literal", "value_type": "string", "value": ","}
+      ],
+      "assign_to": "headers"
+    },
+    {
+      "type": "comment",
+      "text": "나머지 행들 추출 (데이터 행)"
+    },
+    {
+      "type": "call",
+      "function": "Array.slice",
+      "args": [
+        {"type": "ref", "name": "rows"},
+        {"type": "literal", "value_type": "i32", "value": 1}
+      ],
+      "assign_to": "data_rows"
+    },
+    {
+      "type": "comment",
+      "text": "각 데이터 행을 열로 분할"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "data_rows"},
+        {
+          "type": "lambda",
+          "params": ["row"],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.split",
+              "args": [
+                {"type": "ref", "name": "row"},
+                {"type": "literal", "value_type": "string", "value": ","}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "parsed_rows"
+    },
+    {
+      "type": "comment",
+      "text": "헤더와 파싱된 데이터 출력"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "Headers:"}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "headers"}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "Data rows:"}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "parsed_rows"}
+      ]
+    }
+  ]
+}

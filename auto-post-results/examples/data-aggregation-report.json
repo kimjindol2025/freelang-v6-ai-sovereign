@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-06T01:36:24.604Z",
+  "metadata": {
+    "filename": "data-aggregation.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/data-aggregation.json"
+  },
+  "compilation": {
+    "success": false,
+    "errors": [
+      "Type error at instruction 7: Unknown function: IO.print"
+    ]
+  },
+  "execution": {
+    "success": false,
+    "error": "컴파일 실패로 인해 실행되지 않음"
+  },
+  "performance": {
+    "totalProcessingTime": 0
+  },
+  "markdown": "# CLAUDELang v6.0 실행 실패\n\n**파일**: data-aggregation.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 컴파일 에러\n- ❌ Type error at instruction 7: Unknown function: IO.print\n\n## 원본 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"배열 집계 예제 - 모든 숫자의 합 계산 (reduce)\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"numbers\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 10\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 20\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 30\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 40\n          }\n        ]\n      }\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"초기 누적값 (accumulator) 설정\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"initial_sum\",\n      \"value_type\": \"i32\",\n      \"value\": 0\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"람다 함수를 사용한 reduce: acc + current\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.reduce\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"numbers\"\n        },\n        {\n          \"type\": \"ref\",\n          \"name\": \"initial_sum\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"acc\",\n            \"current\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"arithmetic\",\n              \"operator\": \"+\",\n              \"left\": {\n                \"type\": \"ref\",\n                \"name\": \"acc\"\n              },\n              \"right\": {\n                \"type\": \"ref\",\n                \"name\": \"current\"\n              }\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"sum\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"합계 결과 출력\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"sum\"\n        }\n      ]\n    }\n  ]\n}\n```\n"
+}

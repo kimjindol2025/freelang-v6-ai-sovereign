@@ -1,0 +1,85 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "문자열 변환 예제 - 대문자 변환 및 접두사/접미사 추가"
+    },
+    {
+      "type": "var",
+      "name": "words",
+      "value_type": "Array<string>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "string", "value": "hello"},
+          {"type": "literal", "value_type": "string", "value": "world"},
+          {"type": "literal", "value_type": "string", "value": "claudelang"}
+        ]
+      }
+    },
+    {
+      "type": "comment",
+      "text": "각 단어를 대문자로 변환"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "words"},
+        {
+          "type": "lambda",
+          "params": ["word"],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.to_upper",
+              "args": [
+                {"type": "ref", "name": "word"}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "uppercase_words"
+    },
+    {
+      "type": "comment",
+      "text": "각 단어에 '[' 접두사와 ']' 접미사 추가"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "uppercase_words"},
+        {
+          "type": "lambda",
+          "params": ["word"],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.concat",
+              "args": [
+                {"type": "literal", "value_type": "string", "value": "["},
+                {"type": "ref", "name": "word"},
+                {"type": "literal", "value_type": "string", "value": "]"}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "formatted_words"
+    },
+    {
+      "type": "comment",
+      "text": "변환된 단어 목록 출력"
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "formatted_words"}
+      ]
+    }
+  ]
+}

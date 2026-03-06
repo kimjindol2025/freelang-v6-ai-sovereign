@@ -172,7 +172,7 @@ class CLAUDELangCompiler {
         this.scope.set(instr.name, instr.value_type);
 
         // 초기값 타입이 있으면 검사
-        if (instr.value !== undefined && typeof instr.value === "object" && instr.value.type) {
+        if (instr.value !== undefined) {
           const exprType = this.inferType(instr.value);
           if (!this.isCompatible(exprType, instr.value_type)) {
             throw new Error(
@@ -241,7 +241,13 @@ class CLAUDELangCompiler {
     } else if (expr.type === "comparison") {
       return "bool";
     } else if (expr.type === "array") {
-      return "Array<any>";
+      // 배열 요소 타입 추론
+      if (!expr.elements || expr.elements.length === 0) {
+        return "Array<any>";
+      }
+      // 첫 번째 요소의 타입을 배열 타입으로 사용
+      const elementType = this.inferType(expr.elements[0]);
+      return `Array<${elementType}>`;
     } else if (expr.type === "object") {
       return "Object";
     } else if (expr.type === "lambda") {
@@ -260,6 +266,14 @@ class CLAUDELangCompiler {
     if (from === to) return true;
     if (from === "any" || to === "any") return true;
     if (from === "i32" && to === "f64") return true; // 정수 → 실수
+
+    // Generic type compatibility (e.g., Array<i32> to Array<i32>)
+    if (from.startsWith("Array<") && to.startsWith("Array<")) {
+      const fromElement = from.slice(6, -1); // Array<X> → X
+      const toElement = to.slice(6, -1);     // Array<Y> → Y
+      return this.isCompatible(fromElement, toElement);
+    }
+
     return false;
   }
 
@@ -389,7 +403,14 @@ class CLAUDELangCompiler {
       case "lambda":
         const params = expr.params ? expr.params.map((p) => p.name).join(" ") : "";
         const bodyExpr = expr.body
-          .map((b) => this.generateInstruction(b))
+          .map((b) => {
+            // Check if it's an instruction or an expression
+            if (b.type === "arithmetic" || b.type === "comparison" || b.type === "ref" || b.type === "literal" || b.type === "call") {
+              return this.generateExpression(b);
+            } else {
+              return this.generateInstruction(b);
+            }
+          })
           .filter((b) => b !== null)
           .join(" ");
         return `(fn (${params}) ${bodyExpr})`;

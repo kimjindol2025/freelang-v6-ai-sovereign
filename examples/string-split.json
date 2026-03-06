@@ -1,0 +1,64 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "문자열 분할 예제 - 쉼표로 구분된 값 파싱"
+    },
+    {
+      "type": "var",
+      "name": "csv_line",
+      "value_type": "string",
+      "value": "apple,banana,cherry,date"
+    },
+    {
+      "type": "comment",
+      "text": "구분자로 문자열 분할"
+    },
+    {
+      "type": "call",
+      "function": "String.split",
+      "args": [
+        {"type": "ref", "name": "csv_line"},
+        {"type": "literal", "value_type": "string", "value": ","}
+      ],
+      "assign_to": "items"
+    },
+    {
+      "type": "comment",
+      "text": "각 항목의 공백 제거 (trim)"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "items"},
+        {
+          "type": "lambda",
+          "params": ["item"],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.trim",
+              "args": [
+                {"type": "ref", "name": "item"}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "trimmed_items"
+    },
+    {
+      "type": "comment",
+      "text": "결과 출력"
+    },
+    {
+      "type": "call",
+      "function": "IO.print_array",
+      "args": [
+        {"type": "ref", "name": "trimmed_items"}
+      ]
+    }
+  ]
+}

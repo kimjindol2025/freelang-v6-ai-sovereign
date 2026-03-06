@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-06T01:36:24.606Z",
+  "metadata": {
+    "filename": "loop-with-condition.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/loop-with-condition.json"
+  },
+  "compilation": {
+    "success": false,
+    "errors": [
+      "Type error at instruction 5: Unknown function: Array.length"
+    ]
+  },
+  "execution": {
+    "success": false,
+    "error": "컴파일 실패로 인해 실행되지 않음"
+  },
+  "performance": {
+    "totalProcessingTime": 0
+  },
+  "markdown": "# CLAUDELang v6.0 실행 실패\n\n**파일**: loop-with-condition.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 컴파일 에러\n- ❌ Type error at instruction 5: Unknown function: Array.length\n\n## 원본 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"조건부 반복 예제 - 조건을 만족하는 항목 찾기\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"temperatures\",\n      \"value_type\": \"Array<i32>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 15\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 22\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 28\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 35\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 18\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"i32\",\n            \"value\": 30\n          }\n        ]\n      }\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"높은 온도(25도 이상) 찾기\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.filter\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"temperatures\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"temp\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"comparison\",\n              \"operator\": \">=\",\n              \"left\": {\n                \"type\": \"ref\",\n                \"name\": \"temp\"\n              },\n              \"right\": {\n                \"type\": \"literal\",\n                \"value_type\": \"i32\",\n                \"value\": 25\n              }\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"high_temps\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"높은 온도의 개수 계산\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.length\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"high_temps\"\n        }\n      ],\n      \"assign_to\": \"count\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"결과 출력\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print\",\n      \"args\": [\n        {\n          \"type\": \"literal\",\n          \"value_type\": \"string\",\n          \"value\": \"Temperatures >= 25 degrees:\"\n        }\n      ]\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print_array\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"high_temps\"\n        }\n      ]\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print\",\n      \"args\": [\n        {\n          \"type\": \"call\",\n          \"function\": \"String.concat\",\n          \"args\": [\n            {\n              \"type\": \"literal\",\n              \"value_type\": \"string\",\n              \"value\": \"Count: \"\n            },\n            {\n              \"type\": \"ref\",\n              \"name\": \"count\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n```\n"
+}

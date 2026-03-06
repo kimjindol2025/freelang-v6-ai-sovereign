@@ -1,0 +1,37 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "HTTP 요청 및 데이터 처리 예제"
+    },
+    {
+      "type": "var",
+      "name": "url",
+      "value_type": "string",
+      "value": "https://api.github.com/repos/freelang-community/freelang-v6"
+    },
+    {
+      "type": "call",
+      "function": "HTTP.get",
+      "args": [
+        {"type": "ref", "name": "url"}
+      ],
+      "assign_to": "response"
+    },
+    {
+      "type": "call",
+      "function": "print",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "[SUCCESS] GitHub API 요청 완료"}
+      ]
+    },
+    {
+      "type": "call",
+      "function": "print",
+      "args": [
+        {"type": "literal", "value_type": "string", "value": "Repository 정보를 수집했습니다."}
+      ]
+    }
+  ]
+}

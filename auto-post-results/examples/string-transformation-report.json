@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-03-06T01:36:24.610Z",
+  "metadata": {
+    "filename": "string-transformation.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/string-transformation.json"
+  },
+  "compilation": {
+    "success": false,
+    "errors": [
+      "Type error at instruction 7: Unknown function: IO.print_array"
+    ]
+  },
+  "execution": {
+    "success": false,
+    "error": "컴파일 실패로 인해 실행되지 않음"
+  },
+  "performance": {
+    "totalProcessingTime": 0
+  },
+  "markdown": "# CLAUDELang v6.0 실행 실패\n\n**파일**: string-transformation.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 컴파일 에러\n- ❌ Type error at instruction 7: Unknown function: IO.print_array\n\n## 원본 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"문자열 변환 예제 - 대문자 변환 및 접두사/접미사 추가\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"words\",\n      \"value_type\": \"Array<string>\",\n      \"value\": {\n        \"type\": \"array\",\n        \"elements\": [\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"string\",\n            \"value\": \"hello\"\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"string\",\n            \"value\": \"world\"\n          },\n          {\n            \"type\": \"literal\",\n            \"value_type\": \"string\",\n            \"value\": \"claudelang\"\n          }\n        ]\n      }\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"각 단어를 대문자로 변환\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.map\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"words\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"word\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"call\",\n              \"function\": \"String.to_upper\",\n              \"args\": [\n                {\n                  \"type\": \"ref\",\n                  \"name\": \"word\"\n                }\n              ]\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"uppercase_words\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"각 단어에 '[' 접두사와 ']' 접미사 추가\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"Array.map\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"uppercase_words\"\n        },\n        {\n          \"type\": \"lambda\",\n          \"params\": [\n            \"word\"\n          ],\n          \"body\": [\n            {\n              \"type\": \"call\",\n              \"function\": \"String.concat\",\n              \"args\": [\n                {\n                  \"type\": \"literal\",\n                  \"value_type\": \"string\",\n                  \"value\": \"[\"\n                },\n                {\n                  \"type\": \"ref\",\n                  \"name\": \"word\"\n                },\n                {\n                  \"type\": \"literal\",\n                  \"value_type\": \"string\",\n                  \"value\": \"]\"\n                }\n              ]\n            }\n          ]\n        }\n      ],\n      \"assign_to\": \"formatted_words\"\n    },\n    {\n      \"type\": \"comment\",\n      \"text\": \"변환된 단어 목록 출력\"\n    },\n    {\n      \"type\": \"call\",\n      \"function\": \"IO.print_array\",\n      \"args\": [\n        {\n          \"type\": \"ref\",\n          \"name\": \"formatted_words\"\n        }\n      ]\n    }\n  ]\n}\n```\n"
+}

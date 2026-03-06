@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-03-06T01:36:24.607Z",
+  "metadata": {
+    "filename": "markdown-example.json",
+    "filePath": "/data/data/com.termux/files/home/freelang-v6-ai-sovereign/examples/markdown-example.json"
+  },
+  "compilation": {
+    "success": true,
+    "vtCode": "; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; Markdown 문서 생성 예제\n(define doc null)\n(define doc (call Markdown.heading doc 1 \"CLAUDELang 자동 포스팅\"))\n(define doc (call Markdown.paragraph doc \"이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다.\"))\n(define doc (call Markdown.code doc \"json\" \"{\"version\": \"6.0\"}\"))\n(define result (call Markdown.build doc))\n(call print result)",
+    "errors": [],
+    "vtCodeLength": 364
+  },
+  "execution": {
+    "success": true,
+    "output": [
+      "[SUCCESS] GitHub API 요청 완료",
+      "Repository 정보를 수집했습니다.",
+      "(call Markdown.build doc)"
+    ],
+    "executionTime": 0,
+    "memoryUsage": 0.01197052001953125,
+    "instructionCount": 12
+  },
+  "performance": {
+    "totalProcessingTime": 0,
+    "compilationPhase": "included in total",
+    "executionPhase": 0
+  },
+  "markdown": "# CLAUDELang v6.0 자동 실행 결과\n\n**파일**: markdown-example.json\n**실행 시간**: 2026. 3. 6. AM 10:36:24\n\n## 1. 컴파일 결과\n- **상태**: ✅ 성공\n- **VT 코드 길이**: 364 bytes\n\n### VT 바이트코드\n```vt\n; CLAUDELang v6.0 compiled to VT\n; Generated code below\n\n; Markdown 문서 생성 예제\n(define doc null)\n(define doc (call Markdown.heading doc 1 \"CLAUDELang 자동 포스팅\"))\n(define doc (call Markdown.paragraph doc \"이것은 CLAUDELang 자동 포스팅 시스템의 예제입니다.\"))\n(define doc (call Markdown.code doc \"json\" \"{\"version\": \"6.0\"}\"))\n(define result (call Markdown.build doc))\n(call print result)\n```\n\n## 2. 실행 결과\n- **상태**: ✅ 성공\n- **실행 시간**: 0ms\n- **메모리 사용량**: 0.01MB\n- **명령어 수**: 12\n\n### 출력 결과\n```\n[SUCCESS] GitHub API 요청 완료\nRepository 정보를 수집했습니다.\n(call Markdown.build doc)\n```\n\n## 3. 원본 CLAUDELang 코드\n```json\n{\n  \"version\": \"6.0\",\n  \"instructions\": [\n    {\n      \"type\": \"comment\",\n      \"text\": \"Markdown 문서 생성 예제\"\n    },\n    {\n      \"type\": \"var\",\n      \"name\": \"doc\",\n      \"value_type\": \"Object\",\n      \"value\": {\n        \"type\": \"call\",\n        \"function\": \"Markdown.create\"\n      }\n... (82개 줄 생략)\n```\n\n## 4. 성능 지표\n| 항목 | 값 |\n|-----|-----|\n| 컴파일 상태 | 성공 |\n| 실행 상태 | 성공 |\n| 실행 시간 | 0ms |\n| 메모리 사용 | 0.01MB |\n| 명령어 수 | 12 |\n"
+}

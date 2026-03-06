@@ -1,0 +1,42 @@
+{
+  "version": "6.0",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "배열 처리 및 함수형 프로그래밍 예제"
+    },
+    {
+      "type": "var",
+      "name": "numbers",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 1},
+          {"type": "literal", "value_type": "i32", "value": 2},
+          {"type": "literal", "value_type": "i32", "value": 3},
+          {"type": "literal", "value_type": "i32", "value": 4},
+          {"type": "literal", "value_type": "i32", "value": 5}
+        ]
+      }
+    },
+    {
+      "type": "comment",
+      "text": "배열의 각 요소에 대해 반복"
+    },
+    {
+      "type": "loop",
+      "iterator": "num",
+      "range": {"type": "ref", "name": "numbers"},
+      "body": [
+        {
+          "type": "call",
+          "function": "print",
+          "args": [
+            {"type": "ref", "name": "num"}
+          ]
+        }
+      ]
+    }
+  ]
+}
