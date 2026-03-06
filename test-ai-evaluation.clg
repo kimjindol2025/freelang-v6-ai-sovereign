@@ -1,0 +1,222 @@
+{
+  "version": "6.0",
+  "metadata": {
+    "title": "AI Evaluation Test - Complex Data Pipeline",
+    "description": "실제 비즈니스 로직을 처리하는 복잡한 파이프라인",
+    "author": "Claude (AI Evaluation)",
+    "date": "2026-03-06"
+  },
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "=== 1단계: 데이터 생성 ==="
+    },
+    {
+      "type": "var",
+      "name": "users",
+      "value_type": "Array<Object>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {"type": "literal", "value_type": "i32", "value": 1},
+              "name": {"type": "literal", "value_type": "string", "value": "Alice"},
+              "age": {"type": "literal", "value_type": "i32", "value": 28},
+              "salary": {"type": "literal", "value_type": "i32", "value": 50000},
+              "department": {"type": "literal", "value_type": "string", "value": "Engineering"}
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {"type": "literal", "value_type": "i32", "value": 2},
+              "name": {"type": "literal", "value_type": "string", "value": "Bob"},
+              "age": {"type": "literal", "value_type": "i32", "value": 35},
+              "salary": {"type": "literal", "value_type": "i32", "value": 60000},
+              "department": {"type": "literal", "value_type": "string", "value": "Sales"}
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {"type": "literal", "value_type": "i32", "value": 3},
+              "name": {"type": "literal", "value_type": "string", "value": "Charlie"},
+              "age": {"type": "literal", "value_type": "i32", "value": 32},
+              "salary": {"type": "literal", "value_type": "i32", "value": 55000},
+              "department": {"type": "literal", "value_type": "string", "value": "Engineering"}
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {"type": "literal", "value_type": "i32", "value": 4},
+              "name": {"type": "literal", "value_type": "string", "value": "Diana"},
+              "age": {"type": "literal", "value_type": "i32", "value": 29},
+              "salary": {"type": "literal", "value_type": "i32", "value": 48000},
+              "department": {"type": "literal", "value_type": "string", "value": "HR"}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "comment",
+      "text": "=== 2단계: 필터링 (연봉 50000 이상) ==="
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "users"},
+        {
+          "type": "lambda",
+          "params": [{"name": "user", "type": "Object"}],
+          "body": {
+            "type": "comparison",
+            "operator": ">=",
+            "left": {"type": "property", "object": "user", "property": "salary"},
+            "right": {"type": "literal", "value_type": "i32", "value": 50000}
+          }
+        }
+      ],
+      "assign_to": "high_earners"
+    },
+    {
+      "type": "comment",
+      "text": "=== 3단계: 변환 (이름과 부서만 추출) ==="
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "high_earners"},
+        {
+          "type": "lambda",
+          "params": [{"name": "user", "type": "Object"}],
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "property", "object": "user", "property": "name"},
+              "department": {"type": "property", "object": "user", "property": "department"},
+              "salary": {"type": "property", "object": "user", "property": "salary"}
+            }
+          }
+        }
+      ],
+      "assign_to": "simplified"
+    },
+    {
+      "type": "comment",
+      "text": "=== 4단계: 집계 (평균 연봉 계산) ==="
+    },
+    {
+      "type": "call",
+      "function": "Array.reduce",
+      "args": [
+        {"type": "ref", "name": "high_earners"},
+        {"type": "literal", "value_type": "i32", "value": 0},
+        {
+          "type": "lambda",
+          "params": [
+            {"name": "sum", "type": "i32"},
+            {"name": "user", "type": "Object"}
+          ],
+          "body": {
+            "type": "arithmetic",
+            "operator": "+",
+            "left": {"type": "ref", "name": "sum"},
+            "right": {"type": "property", "object": "user", "property": "salary"}
+          }
+        }
+      ],
+      "assign_to": "total_salary"
+    },
+    {
+      "type": "var",
+      "name": "count",
+      "value_type": "i32",
+      "value": {
+        "type": "call",
+        "function": "Array.length",
+        "args": [{"type": "ref", "name": "high_earners"}]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Math.div",
+      "args": [
+        {"type": "ref", "name": "total_salary"},
+        {"type": "ref", "name": "count"}
+      ],
+      "assign_to": "average_salary"
+    },
+    {
+      "type": "comment",
+      "text": "=== 5단계: 조건 처리 (결과 분류) ==="
+    },
+    {
+      "type": "condition",
+      "test": {
+        "type": "comparison",
+        "operator": ">=",
+        "left": {"type": "ref", "name": "average_salary"},
+        "right": {"type": "literal", "value_type": "i32", "value": 55000}
+      },
+      "then": [
+        {
+          "type": "var",
+          "name": "status",
+          "value_type": "string",
+          "value": "HIGH_SALARY_TEAM"
+        }
+      ],
+      "else": [
+        {
+          "type": "var",
+          "name": "status",
+          "value_type": "string",
+          "value": "MODERATE_SALARY_TEAM"
+        }
+      ]
+    },
+    {
+      "type": "comment",
+      "text": "=== 6단계: 최종 결과 구성 ==="
+    },
+    {
+      "type": "var",
+      "name": "result",
+      "value_type": "Object",
+      "value": {
+        "type": "object",
+        "properties": {
+          "processed_count": {"type": "ref", "name": "count"},
+          "average_salary": {"type": "ref", "name": "average_salary"},
+          "team_status": {"type": "ref", "name": "status"},
+          "high_earners": {"type": "ref", "name": "simplified"}
+        }
+      }
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "string_template",
+          "template": "결과: {{count}} 명, 평균 급여: {{avg}}, 상태: {{status}}",
+          "variables": {
+            "count": {"type": "ref", "name": "count"},
+            "avg": {"type": "ref", "name": "average_salary"},
+            "status": {"type": "ref", "name": "status"}
+          }
+        }
+      ]
+    },
+    {
+      "type": "return",
+      "value": {"type": "ref", "name": "result"}
+    }
+  ]
+}

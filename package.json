@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "CLAUDELang - AI-optimized programming language designed for Claude, expressing programs as pure JSON with functional programming paradigms",
   "main": "src/index.js",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./src/index.js",
