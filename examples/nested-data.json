@@ -1,0 +1,74 @@
+{
+  "version": "6.0",
+  "description": "중첩된 배열 처리 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "matrix",
+      "value_type": "Array<Array<i32>>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {
+            "type": "array",
+            "elements": [
+              {"type": "literal", "value_type": "i32", "value": 1},
+              {"type": "literal", "value_type": "i32", "value": 2},
+              {"type": "literal", "value_type": "i32", "value": 3}
+            ]
+          },
+          {
+            "type": "array",
+            "elements": [
+              {"type": "literal", "value_type": "i32", "value": 4},
+              {"type": "literal", "value_type": "i32", "value": 5},
+              {"type": "literal", "value_type": "i32", "value": 6}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "matrix"},
+        {
+          "type": "lambda",
+          "params": [{"name": "row", "type": "Array<i32>"}],
+          "body": [
+            {
+              "type": "call",
+              "function": "Array.reduce",
+              "args": [
+                {"type": "ref", "name": "row"},
+                {
+                  "type": "lambda",
+                  "params": [
+                    {"name": "acc", "type": "i32"},
+                    {"name": "val", "type": "i32"}
+                  ],
+                  "body": [
+                    {
+                      "type": "arithmetic",
+                      "operator": "+",
+                      "left": {"type": "ref", "name": "acc"},
+                      "right": {"type": "ref", "name": "val"}
+                    }
+                  ]
+                },
+                {"type": "literal", "value_type": "i32", "value": 0}
+              ]
+            }
+          ]
+        }
+      ],
+      "assign_to": "sums"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "sums"}]
+    }
+  ]
+}

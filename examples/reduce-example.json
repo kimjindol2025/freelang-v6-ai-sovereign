@@ -1,0 +1,64 @@
+{
+  "version": "6.0",
+  "description": "배열 감축(Reduce) 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "numbers",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 10},
+          {"type": "literal", "value_type": "i32", "value": 20},
+          {"type": "literal", "value_type": "i32", "value": 30},
+          {"type": "literal", "value_type": "i32", "value": 40}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.reduce",
+      "args": [
+        {"type": "ref", "name": "numbers"},
+        {
+          "type": "lambda",
+          "params": [
+            {"name": "acc", "type": "i32"},
+            {"name": "val", "type": "i32"}
+          ],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "+",
+              "left": {"type": "ref", "name": "acc"},
+              "right": {"type": "ref", "name": "val"}
+            }
+          ]
+        },
+        {"type": "literal", "value_type": "i32", "value": 0}
+      ],
+      "assign_to": "sum"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "call",
+          "function": "String.join",
+          "args": [
+            {
+              "type": "array",
+              "elements": [
+                {"type": "literal", "value_type": "string", "value": "합계: "},
+                {"type": "ref", "name": "sum"}
+              ]
+            },
+            {"type": "literal", "value_type": "string", "value": ""}
+          ]
+        }
+      ]
+    }
+  ]
+}

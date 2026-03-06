@@ -1,0 +1,66 @@
+{
+  "version": "6.0",
+  "description": "다중 변환 체이닝 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "numbers",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 1},
+          {"type": "literal", "value_type": "i32", "value": 2},
+          {"type": "literal", "value_type": "i32", "value": 3},
+          {"type": "literal", "value_type": "i32", "value": 4},
+          {"type": "literal", "value_type": "i32", "value": 5}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "numbers"},
+        {
+          "type": "lambda",
+          "params": [{"name": "x", "type": "i32"}],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": ">",
+              "left": {"type": "ref", "name": "x"},
+              "right": {"type": "literal", "value_type": "i32", "value": 1}
+            }
+          ]
+        }
+      ],
+      "assign_to": "filtered"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "filtered"},
+        {
+          "type": "lambda",
+          "params": [{"name": "x", "type": "i32"}],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "*",
+              "left": {"type": "ref", "name": "x"},
+              "right": {"type": "literal", "value_type": "i32", "value": 10}
+            }
+          ]
+        }
+      ],
+      "assign_to": "transformed"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "transformed"}]
+    }
+  ]
+}

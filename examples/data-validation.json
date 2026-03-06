@@ -1,0 +1,46 @@
+{
+  "version": "6.0",
+  "description": "데이터 검증 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "ages",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 30},
+          {"type": "literal", "value_type": "i32", "value": 17},
+          {"type": "literal", "value_type": "i32", "value": 28},
+          {"type": "literal", "value_type": "i32", "value": 15},
+          {"type": "literal", "value_type": "i32", "value": 22}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "ages"},
+        {
+          "type": "lambda",
+          "params": [{"name": "age", "type": "i32"}],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": ">=",
+              "left": {"type": "ref", "name": "age"},
+              "right": {"type": "literal", "value_type": "i32", "value": 18}
+            }
+          ]
+        }
+      ],
+      "assign_to": "adults"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "adults"}]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": "6.0",
+  "description": "데이터 그룹화 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "prices",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 1000},
+          {"type": "literal", "value_type": "i32", "value": 500},
+          {"type": "literal", "value_type": "i32", "value": 200},
+          {"type": "literal", "value_type": "i32", "value": 800},
+          {"type": "literal", "value_type": "i32", "value": 300}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "prices"},
+        {
+          "type": "lambda",
+          "params": [{"name": "price", "type": "i32"}],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": ">=",
+              "left": {"type": "ref", "name": "price"},
+              "right": {"type": "literal", "value_type": "i32", "value": 500}
+            }
+          ]
+        }
+      ],
+      "assign_to": "expensive"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "expensive"}]
+    }
+  ]
+}

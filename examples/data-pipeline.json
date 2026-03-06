@@ -1,0 +1,95 @@
+{
+  "version": "6.0",
+  "description": "데이터 파이프라인 예제",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "데이터 파이프라인: 로드 → 필터링 → 변환 → 출력"
+    },
+    {
+      "type": "var",
+      "name": "raw_data",
+      "value_type": "Array<i32>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "i32", "value": 5},
+          {"type": "literal", "value_type": "i32", "value": 10},
+          {"type": "literal", "value_type": "i32", "value": 15},
+          {"type": "literal", "value_type": "i32", "value": 20},
+          {"type": "literal", "value_type": "i32", "value": 25},
+          {"type": "literal", "value_type": "i32", "value": 30}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.filter",
+      "args": [
+        {"type": "ref", "name": "raw_data"},
+        {
+          "type": "lambda",
+          "params": [{"name": "x", "type": "i32"}],
+          "body": [
+            {
+              "type": "comparison",
+              "operator": ">",
+              "left": {"type": "ref", "name": "x"},
+              "right": {"type": "literal", "value_type": "i32", "value": 10}
+            }
+          ]
+        }
+      ],
+      "assign_to": "filtered"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "filtered"},
+        {
+          "type": "lambda",
+          "params": [{"name": "x", "type": "i32"}],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "/",
+              "left": {"type": "ref", "name": "x"},
+              "right": {"type": "literal", "value_type": "i32", "value": 5}
+            }
+          ]
+        }
+      ],
+      "assign_to": "normalized"
+    },
+    {
+      "type": "call",
+      "function": "Array.reduce",
+      "args": [
+        {"type": "ref", "name": "normalized"},
+        {
+          "type": "lambda",
+          "params": [
+            {"name": "acc", "type": "i32"},
+            {"name": "val", "type": "i32"}
+          ],
+          "body": [
+            {
+              "type": "arithmetic",
+              "operator": "+",
+              "left": {"type": "ref", "name": "acc"},
+              "right": {"type": "ref", "name": "val"}
+            }
+          ]
+        },
+        {"type": "literal", "value_type": "i32", "value": 0}
+      ],
+      "assign_to": "result"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "result"}]
+    }
+  ]
+}

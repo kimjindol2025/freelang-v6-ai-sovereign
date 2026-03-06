@@ -1,0 +1,54 @@
+{
+  "version": "6.0",
+  "description": "문자열 처리 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "sentence",
+      "value_type": "string",
+      "value": "the quick brown fox"
+    },
+    {
+      "type": "call",
+      "function": "String.split",
+      "args": [
+        {"type": "ref", "name": "sentence"},
+        {"type": "literal", "value_type": "string", "value": " "}
+      ],
+      "assign_to": "words"
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "words"},
+        {
+          "type": "lambda",
+          "params": [{"name": "word", "type": "string"}],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.upper",
+              "args": [{"type": "ref", "name": "word"}]
+            }
+          ]
+        }
+      ],
+      "assign_to": "uppercase_words"
+    },
+    {
+      "type": "call",
+      "function": "String.join",
+      "args": [
+        {"type": "ref", "name": "uppercase_words"},
+        {"type": "literal", "value_type": "string", "value": "-"}
+      ],
+      "assign_to": "result"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "result"}]
+    }
+  ]
+}

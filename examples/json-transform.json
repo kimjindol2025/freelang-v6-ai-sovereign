@@ -1,0 +1,47 @@
+{
+  "version": "6.0",
+  "description": "JSON 데이터 변환 예제",
+  "instructions": [
+    {
+      "type": "comment",
+      "text": "배열 데이터를 변환: 문자열 배열 처리"
+    },
+    {
+      "type": "var",
+      "name": "names",
+      "value_type": "Array<string>",
+      "value": {
+        "type": "array",
+        "elements": [
+          {"type": "literal", "value_type": "string", "value": "alice"},
+          {"type": "literal", "value_type": "string", "value": "bob"},
+          {"type": "literal", "value_type": "string", "value": "charlie"}
+        ]
+      }
+    },
+    {
+      "type": "call",
+      "function": "Array.map",
+      "args": [
+        {"type": "ref", "name": "names"},
+        {
+          "type": "lambda",
+          "params": [{"name": "name", "type": "string"}],
+          "body": [
+            {
+              "type": "call",
+              "function": "String.upper",
+              "args": [{"type": "ref", "name": "name"}]
+            }
+          ]
+        }
+      ],
+      "assign_to": "transformed"
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [{"type": "ref", "name": "transformed"}]
+    }
+  ]
+}

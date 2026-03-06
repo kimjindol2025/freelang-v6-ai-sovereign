@@ -1,0 +1,66 @@
+{
+  "version": "6.0",
+  "description": "수학 연산 예제",
+  "instructions": [
+    {
+      "type": "var",
+      "name": "a",
+      "value_type": "i32",
+      "value": 100
+    },
+    {
+      "type": "var",
+      "name": "b",
+      "value_type": "i32",
+      "value": 25
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "arithmetic",
+          "operator": "+",
+          "left": {"type": "ref", "name": "a"},
+          "right": {"type": "ref", "name": "b"}
+        }
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "arithmetic",
+          "operator": "-",
+          "left": {"type": "ref", "name": "a"},
+          "right": {"type": "ref", "name": "b"}
+        }
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "arithmetic",
+          "operator": "*",
+          "left": {"type": "ref", "name": "a"},
+          "right": {"type": "ref", "name": "b"}
+        }
+      ]
+    },
+    {
+      "type": "call",
+      "function": "IO.print",
+      "args": [
+        {
+          "type": "arithmetic",
+          "operator": "/",
+          "left": {"type": "ref", "name": "a"},
+          "right": {"type": "ref", "name": "b"}
+        }
+      ]
+    }
+  ]
+}
