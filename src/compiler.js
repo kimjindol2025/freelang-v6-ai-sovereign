@@ -23,6 +23,18 @@ class CLAUDELangCompiler {
     this.registerFunction("Array.filter", ["array: Array", "fn: Function"], "Array");
     this.registerFunction("Array.reduce", ["array: Array", "fn: Function", "init: any"], "any");
     this.registerFunction("Array.find", ["array: Array", "fn: Function"], "any");
+    this.registerFunction("Array.get", ["array: Array", "index: i32"], "any");
+    this.registerFunction("Array.set", ["array: Array", "index: i32", "value: any"], "Array");
+    this.registerFunction("Array.length", ["array: Array"], "i32");
+    this.registerFunction("Array.push", ["array: Array", "value: any"], "Array");
+    this.registerFunction("Array.pop", ["array: Array"], "any");
+    this.registerFunction("Array.join", ["array: Array", "delimiter: string"], "string");
+    this.registerFunction("Array.slice", ["array: Array", "start: i32", "end: i32"], "Array");
+    this.registerFunction("Array.indexOf", ["array: Array", "value: any"], "i32");
+    this.registerFunction("Array.includes", ["array: Array", "value: any"], "bool");
+    this.registerFunction("Array.reverse", ["array: Array"], "Array");
+    this.registerFunction("Array.sort", ["array: Array"], "Array");
+    this.registerFunction("Array.length", ["array: Array"], "i32");
 
     // String
     this.registerFunction("String.split", ["str: string", "delimiter: string"], "Array<string>");
@@ -58,6 +70,11 @@ class CLAUDELangCompiler {
 
     // Print (기본)
     this.registerFunction("print", ["value: any"], "null");
+
+    // IO (입출력)
+    this.registerFunction("IO.print", ["value: any"], "null");
+    this.registerFunction("IO.print_array", ["array: Array"], "null");
+    this.registerFunction("IO.print_object", ["obj: Object"], "null");
   }
 
   registerFunction(name, params, returnType) {
@@ -141,6 +158,12 @@ class CLAUDELangCompiler {
           }
           break;
 
+        case "arithmetic":
+          if (!instr.operator) {
+            throw new Error(`ArithmeticInstruction at line ${idx} missing operator`);
+          }
+          break;
+
         case "comment":
           break;
 
@@ -199,6 +222,28 @@ class CLAUDELangCompiler {
         // 반환값을 scope에 추가
         if (instr.assign_to) {
           this.scope.set(instr.assign_to, signature.returnType);
+        }
+        break;
+
+      case "arithmetic":
+        // 산술 연산 타입 추론
+        const arithType = this.inferType({ type: "arithmetic" });
+        if (instr.assign_to) {
+          this.scope.set(instr.assign_to, arithType);
+        }
+        break;
+
+      case "comparison":
+        // 비교 연산 타입 추론
+        if (instr.assign_to) {
+          this.scope.set(instr.assign_to, "bool");
+        }
+        break;
+
+      case "property_access":
+        // 속성 접근 타입 추론
+        if (instr.assign_to) {
+          this.scope.set(instr.assign_to, "any");
         }
         break;
 
@@ -307,6 +352,15 @@ class CLAUDELangCompiler {
 
       case "loop":
         return this.generateLoopInstruction(instr);
+
+      case "arithmetic":
+        return this.generateArithmeticInstruction(instr);
+
+      case "comparison":
+        return this.generateComparisonInstruction(instr);
+
+      case "property_access":
+        return this.generatePropertyAccessInstruction(instr);
 
       case "comment":
         return `; ${instr.text}`;
@@ -419,6 +473,10 @@ class CLAUDELangCompiler {
         const obj = this.generateExpression(expr.object);
         return `(property ${obj} "${expr.property}")`;
 
+      case "property_access":
+        const objPA = this.generateExpression(expr.object);
+        return `(property ${objPA} "${expr.property}")`;
+
       case "index":
         const array = this.generateExpression(expr.array);
         const index = this.generateExpression(expr.index);
@@ -453,6 +511,42 @@ class CLAUDELangCompiler {
       .join(" ");
 
     return `(for ${instr.iterator} ${range} (do ${body}))`;
+  }
+
+  generateArithmeticInstruction(instr) {
+    const left = this.generateExpression(instr.left);
+    const right = this.generateExpression(instr.right);
+    const callCode = `(${instr.operator} ${left} ${right})`;
+
+    if (instr.assign_to) {
+      return `(define ${instr.assign_to} ${callCode})`;
+    } else {
+      return callCode;
+    }
+  }
+
+  generateComparisonInstruction(instr) {
+    const left = this.generateExpression(instr.left);
+    const right = this.generateExpression(instr.right);
+    const callCode = `(${instr.operator} ${left} ${right})`;
+
+    if (instr.assign_to) {
+      return `(define ${instr.assign_to} ${callCode})`;
+    } else {
+      return callCode;
+    }
+  }
+
+  generatePropertyAccessInstruction(instr) {
+    const obj = this.generateExpression(instr.object);
+    const prop = `"${instr.property}"`;
+    const callCode = `(property ${obj} ${prop})`;
+
+    if (instr.assign_to) {
+      return `(define ${instr.assign_to} ${callCode})`;
+    } else {
+      return callCode;
+    }
   }
 }
 
