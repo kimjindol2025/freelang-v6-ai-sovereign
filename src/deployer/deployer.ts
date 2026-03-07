@@ -12,11 +12,22 @@
  * - 헬스 체크: 5초 간격, 3회 재시도
  * - 롤백 지원: 배포 실패 시 이전 버전 복구
  * - 배포 상태 추적: pending → building → deploying → running
+ * - 입력 검증: 프로젝트명, 포트, 환경변수 검증
  */
 
 import * as fs from "fs";
 import * as path from "path";
-import { spawnSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
+import { InputValidator, ValidationError } from "../utils/validators";
+import {
+  DeployConfig,
+  BuildResult,
+  ProjectStructure,
+  DeploymentResult,
+  HealthCheckConfig,
+  HealthCheckResult,
+  HttpResponse,
+} from "../utils/types";
 
 export type DeployTarget = "vercel" | "aws-ec2" | "docker" | "local";
 export type DeployStatus = "pending" | "building" | "deploying" | "running" | "failed" | "rolled_back";

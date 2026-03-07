@@ -106,7 +106,11 @@ export class EnvManager {
   /**
    * 환경 변수 검증
    */
-  validate(envVars: EnvConfig, projectType: "api" | "web" | "fullstack" = "api"): EnvValidationResult {
+  validate(
+    envVars: EnvConfig,
+    projectType: "api" | "web" | "fullstack" = "api",
+    environment: "production" | "development" | "test" = "development"
+  ): EnvValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -118,6 +122,9 @@ export class EnvManager {
         errors.push(`Missing required variable: ${varName}`);
       }
     }
+
+    // Check environment-specific required variables
+    this.checkRequiredVariables(environment, envVars, errors);
 
     // Validate specific variable formats
     if (envVars.DATABASE_URL && !envVars.DATABASE_URL.startsWith("postgresql://")) {
@@ -137,6 +144,38 @@ export class EnvManager {
       errors,
       warnings,
     };
+  }
+
+  /**
+   * 환경별 필수 변수 검증
+   */
+  private checkRequiredVariables(environment: string, envVars: EnvConfig, errors: string[]): void {
+    const required = REQUIRED_VARS[environment as keyof typeof REQUIRED_VARS] || [];
+
+    for (const key of required) {
+      if (!envVars[key]) {
+        errors.push(`[${environment}] Missing required environment variable: ${key}`);
+      }
+    }
+  }
+
+  /**
+   * 민감한 정보 마스킹 (로그 출력용)
+   */
+  maskSensitiveVars(config: EnvConfig): Record<string, string> {
+    const masked = { ...config };
+
+    for (const key of SENSITIVE_FIELDS) {
+      if (masked[key]) {
+        const value = String(masked[key]);
+        masked[key] =
+          value.length > 6
+            ? value.substring(0, 3) + "*".repeat(value.length - 6) + value.substring(value.length - 3)
+            : "*".repeat(value.length);
+      }
+    }
+
+    return masked;
   }
 
   /**
@@ -359,13 +398,18 @@ export class EnvManager {
 if (require.main === module) {
   const manager = new EnvManager();
 
-  console.log("\n📋 Test 1: Generate default API .env");
-  manager.generateDefaultEnv("api", "/tmp/test-api.env");
+  console.log("\n📋 Test 1: Generate default API .env (with path validation)");
+  try {
+    manager.generateDefaultEnv("api", ".env");
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
 
-  console.log("\n📋 Test 2: Validate environment variables");
+  console.log("\n📋 Test 2: Validate environment variables (enhanced)");
   const testConfig: EnvConfig = {
     DATABASE_URL: "postgresql://user:pass@localhost:5432/app",
-    JWT_SECRET: "this-is-a-very-long-secret-key",
+    JWT_SECRET: "this-is-a-very-long-secret-key-that-is-32-chars+",
+    API_KEY: "generated-api-key-longer-than-20-chars",
     API_PORT: 3000,
   };
   const validation = manager.validate(testConfig, "api");
@@ -375,13 +419,38 @@ if (require.main === module) {
     warnings: validation.warnings,
   });
 
-  console.log("\n📋 Test 3: Generate .env file");
-  manager.generateEnvFile(testConfig, "/tmp/test.env");
+  console.log("\n📋 Test 3: Mask sensitive variables");
+  const masked = manager.maskSensitiveVars(testConfig);
+  console.log("Masked config:", masked);
 
-  console.log("\n📋 Test 4: Generate Docker .env");
-  manager.generateDockerEnv(testConfig, "/tmp/test.docker.env");
+  console.log("\n📋 Test 4: Path traversal protection");
+  try {
+    manager.generateEnvFile(testConfig, "../../../etc/passwd", "/tmp/project");
+  } catch (error) {
+    console.log(`✅ Path traversal blocked: ${error}`);
+  }
 
-  console.log("\n📋 Test 5: Read .env file");
-  const read = manager.readEnvFile("/tmp/test.env");
-  console.log("Read config:", read);
+  console.log("\n📋 Test 5: Generate .env file (with path validation)");
+  try {
+    manager.generateEnvFile(testConfig, ".env");
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+
+  console.log("\n📋 Test 6: Generate Docker .env (with security)");
+  try {
+    manager.generateDockerEnv(testConfig, ".env.docker");
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+
+  console.log("\n📋 Test 7: Read .env file (with path validation)");
+  try {
+    const read = manager.readEnvFile(".env");
+    console.log("Read config:", read);
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+
+  console.log("\n✅ All tests completed!");
 }

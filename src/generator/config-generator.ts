@@ -170,18 +170,24 @@ export class ConfigGenerator {
   }
 
   private generateEnvExample(options: ConfigOptions): string {
-    let env = `NODE_ENV=development\nPORT=${options.port}\n`;
+    let env = `# Environment Variables\n`;
+    env += `# ⚠️  SECURITY: Set required values before deployment\n\n`;
+    env += `NODE_ENV=development\nPORT=${options.port}\n`;
     env += `DEBUG=true\nLOG_LEVEL=info\n`;
 
     const database = options.techStack.database?.toLowerCase();
     if (database?.includes('postgres')) {
-      env += `DATABASE_URL=postgresql://user:password@localhost:5432/${options.projectName}\n`;
+      env += `# ⚠️  REQUIRED: Database URL\n`;
+      env += `# DATABASE_URL=postgresql://user:password@host:port/${options.projectName}\n`;
     } else if (database?.includes('mongo')) {
-      env += `MONGODB_URI=mongodb://localhost:27017/${options.projectName}\n`;
+      env += `# ⚠️  REQUIRED: MongoDB connection string\n`;
+      env += `# MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/${options.projectName}\n`;
     }
 
     if (options.requirements.auth) {
-      env += `JWT_SECRET=your-secret-key\nJWT_EXPIRY=24h\n`;
+      env += `# ⚠️  REQUIRED: JWT secret (min 32 characters)\n`;
+      env += `# JWT_SECRET=<generate with: openssl rand -base64 32>\n`;
+      env += `JWT_EXPIRY=24h\n`;
     }
 
     return env;

@@ -449,23 +449,28 @@ export class CodeGenEngine {
 
   private generateEnv(context: CodeGenContext, request: CodeGenRequest): string {
     let content = `# Environment Variables\n`;
+    content += `# ⚠️  SECURITY: Set required values before deployment\n\n`;
     content += `NODE_ENV=development\n`;
     content += `PORT=${context.port}\n`;
 
     if (request.requirements.auth) {
-      content += `JWT_SECRET=your-secret-key-here\n`;
+      content += `# ⚠️  REQUIRED: JWT secret (min 32 characters)\n`;
+      content += `# JWT_SECRET=<generate with: openssl rand -base64 32>\n`;
       content += `JWT_EXPIRY=24h\n`;
     }
 
     const dbType = request.tech_stack.database?.toLowerCase() || '';
     if (dbType.includes('postgres') || dbType.includes('sql')) {
-      content += `DATABASE_URL=postgresql://user:password@localhost:5432/${context.projectName}\n`;
+      content += `# ⚠️  REQUIRED: Database URL\n`;
+      content += `# DATABASE_URL=postgresql://user:password@host:port/${context.projectName}\n`;
     } else if (dbType.includes('mongo')) {
-      content += `MONGODB_URI=mongodb://localhost:27017/${context.projectName}\n`;
+      content += `# ⚠️  REQUIRED: MongoDB connection string\n`;
+      content += `# MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/${context.projectName}\n`;
     }
 
     if (dbType.includes('redis')) {
-      content += `REDIS_URL=redis://localhost:6379\n`;
+      content += `# ⚠️  Optional: Redis URL\n`;
+      content += `# REDIS_URL=redis://password@host:6379\n`;
     }
 
     return content;
@@ -680,7 +685,14 @@ export interface UpdateUserInput {
   private generateJwtAuth(context: CodeGenContext): string {
     return `import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET || 'your-secret-key';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+if (process.env.JWT_SECRET.length < 32) {
+  throw new Error('JWT_SECRET must be at least 32 characters for security');
+}
+
+const SECRET = process.env.JWT_SECRET;
 const EXPIRY = process.env.JWT_EXPIRY || '24h';
 
 export const generateToken = (payload: any) => {

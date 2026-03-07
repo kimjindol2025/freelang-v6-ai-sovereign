@@ -411,7 +411,7 @@ export class AWSDeployer {
       // Step 1: ECR (Elastic Container Registry) 이미지 빌드 (테스트 모드: 건너뜀)
       const imageName = fs.existsSync(config.projectRoot)
         ? await this.buildAndPushECRImage(config)
-        : `123456789012.dkr.ecr.us-east-1.amazonaws.com/${config.projectName}:${config.version}`;
+        : this.generateTestECRImageName(config);
 
       // Step 2: Auto Scaling Group 설정
       const scalingPolicy = this.getScalingPolicy(config);
@@ -497,23 +497,65 @@ export class AWSDeployer {
 
     try {
       // Docker build
-      execSync(
-        `docker build -t ${config.projectName}:${config.version} -f Dockerfile.aws .`,
-        {
-          cwd: config.projectRoot,
-          stdio: "inherit",
-        }
-      );
+      const buildResult = spawnSync("docker", [
+        "build",
+        "-t",
+        `${config.projectName}:${config.version}`,
+        "-f",
+        "Dockerfile.aws",
+        ".",
+      ], {
+        cwd: config.projectRoot,
+        stdio: "inherit",
+      });
+      if (buildResult.error) {
+        throw buildResult.error;
+      }
+      if (buildResult.status !== 0) {
+        throw new Error(`Docker build failed with status ${buildResult.status}`);
+      }
       console.log("✅ Docker image built");
 
-      // Tag and push to ECR
-      execSync(`docker tag ${config.projectName}:${config.version} ${imageName}`, {
+      // Tag image for ECR
+      const tagResult = spawnSync("docker", [
+        "tag",
+        `${config.projectName}:${config.version}`,
+        imageName,
+      ], {
         stdio: "inherit",
       });
-      execSync(`aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${accountId}.dkr.ecr.${region}.amazonaws.com`, {
+      if (tagResult.error) {
+        throw tagResult.error;
+      }
+      if (tagResult.status !== 0) {
+        throw new Error(`Docker tag failed with status ${tagResult.status}`);
+      }
+
+      // AWS ECR login (using shell to handle pipe)
+      const ecrUri = `${accountId}.dkr.ecr.${region}.amazonaws.com`;
+      const loginResult = spawnSync("sh", [
+        "-c",
+        `aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUri}`,
+      ], {
         stdio: "inherit",
       });
-      execSync(`docker push ${imageName}`, { stdio: "inherit" });
+      if (loginResult.error) {
+        throw loginResult.error;
+      }
+      if (loginResult.status !== 0) {
+        throw new Error(`ECR login failed with status ${loginResult.status}`);
+      }
+
+      // Push image to ECR
+      const pushResult = spawnSync("docker", ["push", imageName], {
+        stdio: "inherit",
+      });
+      if (pushResult.error) {
+        throw pushResult.error;
+      }
+      if (pushResult.status !== 0) {
+        throw new Error(`Docker push failed with status ${pushResult.status}`);
+      }
       console.log("✅ Pushed to ECR");
     } catch (error) {
       throw new Error(`ECR push failed: ${error}`);
@@ -694,6 +736,13 @@ Resources:
     });
   }
 
+  private generateTestECRImageName(config: CloudDeployConfig): string {
+    // Generate a test ECR image name without hardcoded account ID
+    const region = process.env.AWS_REGION || "us-east-1";
+    // Use placeholder for test mode - actual deployment requires AWS_ACCOUNT_ID
+    return `[AWS_ACCOUNT_ID].dkr.ecr.${region}.amazonaws.com/${config.projectName}:${config.version}`;
+  }
+
   private generateDeploymentId(): string {
     return `aws-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
@@ -803,19 +852,36 @@ export class GCPDeployer {
     console.log(`Building and pushing to Artifact Registry: ${imageName}`);
 
     try {
-      execSync(
-        `docker build -t ${imageName} -f Dockerfile.gcp .`,
-        {
-          cwd: config.projectRoot,
-          stdio: "inherit",
-        }
-      );
+      // Docker build
+      const buildResult = spawnSync("docker", [
+        "build",
+        "-t",
+        imageName,
+        "-f",
+        "Dockerfile.gcp",
+        ".",
+      ], {
+        cwd: config.projectRoot,
+        stdio: "inherit",
+      });
+      if (buildResult.error) {
+        throw buildResult.error;
+      }
+      if (buildResult.status !== 0) {
+        throw new Error(`Docker build failed with status ${buildResult.status}`);
+      }
       console.log("✅ Docker image built");
 
-      execSync(
-        `docker push ${imageName}`,
-        { stdio: "inherit" }
-      );
+      // Push to Artifact Registry
+      const pushResult = spawnSync("docker", ["push", imageName], {
+        stdio: "inherit",
+      });
+      if (pushResult.error) {
+        throw pushResult.error;
+      }
+      if (pushResult.status !== 0) {
+        throw new Error(`Docker push failed with status ${pushResult.status}`);
+      }
       console.log("✅ Pushed to Artifact Registry");
     } catch (error) {
       throw new Error(`Artifact Registry push failed: ${error}`);
